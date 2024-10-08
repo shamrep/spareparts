@@ -1,32 +1,8 @@
 package com.spareparts.store.repository;
 
 import com.spareparts.store.model.Part;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Repository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.List;
+public interface PartRepository extends JpaRepository<Part, Long> {
 
-@Repository
-public class PartRepository {
-
-    private final JdbcTemplate jdbcTemplate;
-
-    public PartRepository(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-    }
-
-    public List<Part> findAll() {
-        String sql = "SELECT * FROM parts";
-        return jdbcTemplate.query(sql, (rs, rowNum) -> new Part(
-                rs.getLong("id"),
-                rs.getString("name"),
-                rs.getString("description"),
-                rs.getBigDecimal("price")
-        ));
-    }
-
-    public void save(Part part) {
-        String sql = "INSERT INTO parts (name, description, price) VALUES (?, ?, ?)";
-        jdbcTemplate.update(sql, part.getName(), part.getDescription(), part.getPrice());
-    }
 }
