@@ -15,15 +15,15 @@ public class PartRepositoryJdbcTemplate {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public List<Part> findAll() {
-        String sql = "SELECT * FROM parts";
-        return jdbcTemplate.query(sql, (rs, rowNum) -> new Part(
-                rs.getLong("id"),
-                rs.getString("name"),
-                rs.getString("description"),
-                rs.getBigDecimal("price")
-        ));
-    }
+//    public List<Part> findAll() {
+//        String sql = "SELECT * FROM parts";
+//        return jdbcTemplate.query(sql, (rs, rowNum) -> new Part(
+//                rs.getLong("id"),
+//                rs.getString("name"),
+//                rs.getString("description"),
+//                rs.getBigDecimal("price")
+//        ));
+//    }
 
     public void save(Part part) {
         String sql = "INSERT INTO parts (name, description, price) VALUES (?, ?, ?)";

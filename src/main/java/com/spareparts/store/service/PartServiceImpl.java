@@ -3,9 +3,11 @@ package com.spareparts.store.service;
 import com.spareparts.store.model.Part;
 import com.spareparts.store.repository.PartRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class PartServiceImpl implements PartService {
 
     @Autowired
