@@ -2,7 +2,6 @@ package com.spareparts.store.repository;
 
 import liquibase.LabelExpression;
 import liquibase.Liquibase;
-import liquibase.command.CommandScope;
 import liquibase.database.jvm.JdbcConnection;
 import liquibase.exception.LiquibaseException;
 import liquibase.resource.ClassLoaderResourceAccessor;
@@ -21,10 +20,10 @@ public class LiquibaseRunner {
                 jdbcConnection
         );
 
+        //todo find out what is wrong
         try {
-            liquibase.update((String) null, String.valueOf(new LabelExpression()));
-        }
-        catch (Exception e) {
+            liquibase.update(null, String.valueOf(new LabelExpression()));
+        } catch (Exception e) {
             throw new RuntimeException("Failed to run Liquibase migrations", e);
         }
     }

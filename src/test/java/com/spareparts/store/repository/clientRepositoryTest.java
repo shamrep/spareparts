@@ -1,6 +1,6 @@
 package com.spareparts.store.repository;
 
-import com.spareparts.store.model.Customer;
+import com.spareparts.store.model.Client;
 import liquibase.exception.LiquibaseException;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -16,7 +16,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @Testcontainers
-public class CustomerRepositoryTest {
+public class clientRepositoryTest {
     //todo get parameters from appl.prop
     @Container
     static PostgreSQLContainer<?> postgreSQLContainer =
@@ -25,7 +25,7 @@ public class CustomerRepositoryTest {
                     .withUsername("root")
                     .withPassword("1234");
 
-    private static CustomerRepository customerRepository;
+    private static ClientRepositoryImpl customerRepository;
 
     @BeforeAll
     static void setUp() throws SQLException {
@@ -42,7 +42,7 @@ public class CustomerRepositoryTest {
         }
 
         // Initialize the repository
-        customerRepository = new CustomerRepository();
+        customerRepository = new ClientRepositoryImpl();
     }
 
     @AfterAll
@@ -52,10 +52,10 @@ public class CustomerRepositoryTest {
 
     @Test
     void testGetCustomers() {
-        List<Customer> customers = customerRepository.get();
-        assertEquals(2, customers.size());
-        assertEquals("test1@gmail.com", customers.get(0).getEmail());
-        assertEquals("test2@gmail.com", customers.get(1).getEmail());
+        List<Client> Clients = customerRepository.get();
+        assertEquals(2, Clients.size());
+        assertEquals("test1@gmail.com", Clients.get(0).getEmail());
+        assertEquals("test2@gmail.com", Clients.get(1).getEmail());
     }
 
 }

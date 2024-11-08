@@ -1,19 +1,16 @@
 package com.spareparts.store.service;
 
 
-import com.spareparts.store.model.Part;
 import org.junit.jupiter.api.Test;
-
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class PartServiceImplTest {
+class ClientServiceImplTest {
 
     @Test
     void partsEmptyIfNoPartsAdded () {
 //        fail();
-        PartServiceImpl partService = new PartServiceImpl();
+        ClientServiceImpl partService = new ClientServiceImpl();
         var allParts = partService.getAllParts();
         assertTrue(allParts.isEmpty());
     }
