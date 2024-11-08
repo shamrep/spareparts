@@ -1,8 +1,8 @@
 package com.spareparts.store.repository;
 
-import liquibase.Contexts;
 import liquibase.LabelExpression;
 import liquibase.Liquibase;
+import liquibase.command.CommandScope;
 import liquibase.database.jvm.JdbcConnection;
 import liquibase.exception.LiquibaseException;
 import liquibase.resource.ClassLoaderResourceAccessor;

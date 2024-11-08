@@ -32,10 +32,11 @@ dependencies {
 	implementation ("org.liquibase:liquibase-core")
 	runtimeOnly("org.postgresql:postgresql")
 
+
 	compileOnly("org.projectlombok:lombok")
 	annotationProcessor("org.projectlombok:lombok")
 
-
+	
 //	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.junit.jupiter:junit-jupiter:5.7.1")
 	testImplementation("org.testcontainers:junit-jupiter:1.20.3")
