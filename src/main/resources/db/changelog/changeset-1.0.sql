@@ -5,3 +5,8 @@ CREATE TABLE parts (
     description TEXT,
     price NUMERIC(10, 2)
 );
+
+create table customers (
+    id serial primary key,
+    email varchar(100) not null
+);

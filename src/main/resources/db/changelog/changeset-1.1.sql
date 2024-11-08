@@ -5,3 +5,7 @@ INSERT INTO parts (name, description, price) VALUES
     ('Air Filter', 'Premium air filter for SUVs', 29.99),
     ('Spark Plugs', 'Set of 4 spark plugs', 19.99),
     ('Battery', '12V car battery', 89.99);
+
+insert into customers (email) values
+    ('test1@gmail.com'),
+    ('test2@gmail.com');
