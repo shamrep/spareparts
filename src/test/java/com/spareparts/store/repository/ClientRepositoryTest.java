@@ -1,22 +1,25 @@
 package com.spareparts.store.repository;
 
-import com.spareparts.store.model.Customer;
-import liquibase.exception.LiquibaseException;
+import com.spareparts.store.model.Client;
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.containers.PostgreSQLContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
 
+import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 //@Testcontainers
-public class CustomerRepositoryTest {
+public class ClientRepositoryTest {
 
     private static final String POSTGRES_IMAGE = "postgres:17";
     private static final String DATABASE_NAME = "testdb";
@@ -31,7 +34,7 @@ public class CustomerRepositoryTest {
                     .withUsername(USERNAME)
                     .withPassword(PASSWORD);
 
-    static CustomerRepository customerRepository;
+    static ClientRepository clientRepository;
 
     static DataSource dataSource;
 
@@ -53,7 +56,7 @@ public class CustomerRepositoryTest {
         LiquibaseRunner.runLiquibaseMigrations(args);
 
         // Initialize the repository
-        customerRepository = new CustomerRepository();
+        clientRepository = new ClientRepositoryImpl();
 
         if (dataSource == null) {
             HikariConfig config = new HikariConfig();
@@ -72,17 +75,17 @@ public class CustomerRepositoryTest {
     }
 
     @Test
-    void testGetCustomers() {
+    void findAllTest() {
         // insert test data
         try (Connection connection = dataSource.getConnection();
              Statement statement = connection.createStatement()) {
-            statement.execute("INSERT INTO customers (email) VALUES ('test1@gmail.com')");
-            statement.execute("INSERT INTO customers (email) VALUES ('test2@gmail.com')");
+            statement.execute("INSERT INTO clients (email) VALUES ('test1@gmail.com')");
+            statement.execute("INSERT INTO clients (email) VALUES ('test2@gmail.com')");
         } catch (SQLException e) {
             throw new RuntimeException("Failed to set up test data", e);
         }
 
-        List<Customer> customers = customerRepository.get();
+        List<Client> customers = clientRepository.findAll();
 
         assertEquals(2, customers.size());
         assertEquals("test1@gmail.com", customers.get(0).getEmail());

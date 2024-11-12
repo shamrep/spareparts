@@ -8,13 +8,19 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
-public class ClientRepositoryImpl {
-    public List<Client> get() {
+public class ClientRepositoryImpl implements ClientRepository {
+    @Override
+    public Optional<Client> findById(Long id) {
+        return Optional.empty();
+    }
+
+    public List<Client> findAll() {
         List<Client> clients = new ArrayList<>();
         try (Connection connection = DatabaseConnectionManager.getConnection();
              Statement statement = connection.createStatement();
-             ResultSet rs = statement.executeQuery("SELECT * FROM customers;")) {
+             ResultSet rs = statement.executeQuery("SELECT * FROM clients;")) {
 
             while (rs.next()) {
                 clients.add(new Client(rs.getLong("id"), rs.getString("email")));
@@ -26,19 +32,21 @@ public class ClientRepositoryImpl {
         return clients;
     }
 
-    public List<Client> findAll() {
-        return null;
+    @Override
+    public void save(Client client) {
+
     }
 
-    public Client getReferenceById(Long id) {
-        return null;
+    @Override
+    public void update(Client client) {
+
     }
 
-    public Client save(Client client) {
-        return null;
+    @Override
+    public void delete(Long id) {
+
     }
 
-    public void deleteById(Long id) {
-    }
+
 }
 
