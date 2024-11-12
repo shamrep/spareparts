@@ -1,31 +1,20 @@
 package com.spareparts.store.repository;
 
-import liquibase.LabelExpression;
-import liquibase.Liquibase;
 import liquibase.command.CommandScope;
-import liquibase.database.jvm.JdbcConnection;
 import liquibase.exception.LiquibaseException;
-import liquibase.resource.ClassLoaderResourceAccessor;
 
-import java.sql.Connection;
-import java.sql.SQLException;
+import java.util.Map;
 
 public class LiquibaseRunner {
 
-    public static void runLiquibaseMigrations(Connection connection) throws SQLException, LiquibaseException {
-        JdbcConnection jdbcConnection = new JdbcConnection(connection);
-
-        Liquibase liquibase = new Liquibase(
-                "db/changelog/db.changelog-master.xml", // Path to changelog file
-                new ClassLoaderResourceAccessor(),
-                jdbcConnection
-        );
-
+    public static void runLiquibaseMigrations(Map<String, Object> scopeArgs) {
         try {
-            liquibase.update((String) null, String.valueOf(new LabelExpression()));
-        }
-        catch (Exception e) {
-            throw new RuntimeException("Failed to run Liquibase migrations", e);
+            CommandScope updateScope = new CommandScope("update");
+            scopeArgs.forEach(updateScope::addArgumentValue);
+            updateScope.execute();
+            System.out.println("Liquibase migrations applied successfully.");
+        } catch (LiquibaseException e) {
+            throw new RuntimeException("Failed to run Liquibase update command", e);
         }
     }
 
