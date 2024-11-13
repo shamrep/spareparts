@@ -72,26 +72,30 @@ public class TrainerRepositoryImpl implements TrainerRepository {
     }
 
     @Override
-    public void save(Trainer trainer) {
+    public Optional<Trainer> save(Trainer trainer) {
 
-        String sql = "insert into trainers(name, email) values(?, ?)";
+        String sql = "insert into trainers(name, email) values(?, ?) returning id";
 
         try (Connection connection = dataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
 
             preparedStatement.setString(1, trainer.name());
             preparedStatement.setString(2, trainer.email());
-            //todo or use Optional<Trainer>??
-            int rowsAffected = preparedStatement.executeUpdate();
 
-            if (rowsAffected == 0) {
-                throw new RuntimeException("Failed to save trainer: no rows affected.");
+            try(ResultSet resultSet = preparedStatement.executeQuery()) {
+
+                if (resultSet.next()) {
+                    Long generatedId = resultSet.getLong("id");
+
+                    return Optional.of(new Trainer(generatedId, trainer.name(), trainer.email()));
+                }
             }
 
-        } catch (SQLException e) {
-            throw new RuntimeException("Error while saving trainer ID = " + trainer.id(), e);
-        }
+            return Optional.empty();
 
+        } catch (SQLException e) {
+            throw new RuntimeException("Error while saving trainer email = " + trainer.email(), e);
+        }
     }
 
     @Override
@@ -137,5 +141,23 @@ public class TrainerRepositoryImpl implements TrainerRepository {
         } catch (SQLException e) {
             throw new RuntimeException("Error while deleting trainer with ID = " + id, e);
         }
+
     }
+
+    @Override
+    public void deleteAll() {
+
+        String sql = "delete from trainers;";
+
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+
+            preparedStatement.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Error while deleting all trainers", e);
+        }
+
+    }
+
 }

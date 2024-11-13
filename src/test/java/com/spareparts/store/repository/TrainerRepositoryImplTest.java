@@ -2,6 +2,7 @@ package com.spareparts.store.repository;
 
 import com.spareparts.store.model.Trainer;
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.containers.PostgreSQLContainer;
@@ -39,6 +40,12 @@ public class TrainerRepositoryImplTest {
         postgreSQLContainer.stop();
     }
 
+    @AfterEach
+    void cleanUp() {
+        // Optional: Clear the trainers table after each test for isolation
+        trainerRepository.deleteAll();
+    }
+
     @Test
     void testSaveAndFindById() {
         Trainer trainer = new Trainer(1L,"John Doe", "john.doe@example.com");
@@ -69,5 +76,18 @@ public class TrainerRepositoryImplTest {
         assertEquals(2, trainers.size(), "Should find 2 trainers");
         assertTrue(trainers.contains(trainer1));
         assertTrue(trainers.contains(trainer2));
+    }
+
+    @Test
+    void testDelete() {
+        Trainer trainer = new Trainer(1L, "Alice Green", "alice.green@example.com");
+        trainerRepository.save(trainer);
+
+        // Act: Delete the trainer
+        trainerRepository.delete(trainer.id());
+
+        // Assert: Check that the trainer was deleted
+        Optional<Trainer> result = trainerRepository.findById(trainer.id());
+        assertFalse(result.isPresent(), "Trainer should no longer be present after deletion");
     }
 }

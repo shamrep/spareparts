@@ -8,7 +8,8 @@ import java.util.Optional;
 public interface TrainerRepository {
     Optional<Trainer> findById(Long id);
     List<Trainer> findAll();
-    void save(Trainer trainer);
+    Optional<Trainer> save(Trainer trainer);
     void update(Trainer trainer);
     void delete(Long id);
+    void deleteAll();
 }
