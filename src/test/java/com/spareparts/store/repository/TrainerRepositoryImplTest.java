@@ -9,6 +9,8 @@ import org.testcontainers.containers.PostgreSQLContainer;
 
 import javax.sql.DataSource;
 
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,6 +23,7 @@ public class TrainerRepositoryImplTest {
     static PostgreSQLContainer<?> postgreSQLContainer;
     static TrainerRepository trainerRepository;
     static DataSource dataSource;
+    static Connection testConnection;
 
     @BeforeAll
     static void setUp() {
@@ -33,22 +36,39 @@ public class TrainerRepositoryImplTest {
         dataSource = getDataSource(postgreSQLContainer);
 
         trainerRepository = new TrainerRepositoryImpl(dataSource);
+
+        try {
+            testConnection = dataSource.getConnection();
+            testConnection.setAutoCommit(false); // Disable auto-commit for rollback control
+        } catch (SQLException e) {
+            throw new RuntimeException("Failed to set up test transaction", e);
+        }
     }
 
     @AfterAll
     public static void tearDown() {
+
+        try {
+            testConnection.close();
+        } catch (SQLException e) {
+            throw new RuntimeException("Failed to close test connection", e);
+        }
+
         postgreSQLContainer.stop();
     }
 
     @AfterEach
-    void cleanUp() {
-        // Optional: Clear the trainers table after each test for isolation
-        trainerRepository.deleteAll();
+    void rollBackTransaction() {
+        try {
+            testConnection.rollback();
+        } catch (SQLException e) {
+            throw new RuntimeException("Failed to roll back test transaction", e);
+        }
     }
 
     @Test
     void testSaveAndFindById() {
-        Trainer trainer = new Trainer(1L, "John Doe", "john.doe@example.com");
+        Trainer trainer = new Trainer(null, "John Doe", "john.doe@example.com");
 
         // Act: Save the trainer
         Optional<Trainer> savedTrainer = trainerRepository.save(trainer);
@@ -70,24 +90,30 @@ public class TrainerRepositoryImplTest {
 
     @Test
     void testFindAll() {
-        Trainer trainer1 = new Trainer(1L, "Jane Smith", "jane.smith@example.com");
-        Trainer trainer2 = new Trainer(2L, "Bob Brown", "bob.brown@example.com");
+        Trainer trainer1 = new Trainer(null, "Jane Smith", "jane.smith@example.com");
+        Trainer trainer2 = new Trainer(null, "Bob Brown", "bob.brown@example.com");
 
-        trainerRepository.save(trainer1);
-        trainerRepository.save(trainer2);
+        Optional<Trainer> savedTrainer1 = trainerRepository.save(trainer1);
+        Optional<Trainer> savedTrainer2 = trainerRepository.save(trainer2);
+
+        // Ensure trainers were saved
+        assertTrue(savedTrainer1.isPresent(), "Trainer1 should be saved and present.");
+        assertTrue(savedTrainer2.isPresent(), "Trainer2 should be saved and present.");
 
         // Act: Retrieve all trainers
         List<Trainer> trainers = trainerRepository.findAll();
 
         // Assert: Check the size and contents of the trainers list
         assertEquals(2, trainers.size(), "Should find 2 trainers");
-        assertTrue(trainers.contains(trainer1));
-        assertTrue(trainers.contains(trainer2));
+
+        // Assert: Verify that the saved trainers are in the list
+        assertTrue(trainers.contains(savedTrainer1.get()), "List should contain savedTrainer1");
+        assertTrue(trainers.contains(savedTrainer2.get()), "List should contain savedTrainer2");
     }
 
     @Test
     void testDelete() {
-        Trainer trainer = new Trainer(1L, "Alice Green", "alice.green@example.com");
+        Trainer trainer = new Trainer(null, "Alice Green", "alice.green@example.com");
 
         Optional<Trainer> savedTrainer = trainerRepository.save(trainer);
 
@@ -98,7 +124,7 @@ public class TrainerRepositoryImplTest {
         trainerRepository.delete(savedTrainer.get().id());
 
         // Assert: Check that the trainer was deleted
-        Optional<Trainer> result = trainerRepository.findById(trainer.id());
+        Optional<Trainer> result = trainerRepository.findById(savedTrainer.get().id());
         assertFalse(result.isPresent(), "Trainer should no longer be present after deletion");
     }
 }
