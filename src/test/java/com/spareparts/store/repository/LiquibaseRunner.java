@@ -7,14 +7,11 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.spareparts.store.repository.ClientRepositoryTest.postgreSQLContainer;
-
 public class LiquibaseRunner {
 
     public static void runLiquibaseMigrations(Map<String, Object> scopeArgs) {
 
         try {
-
             CommandScope updateScope = new CommandScope("update");
             scopeArgs.forEach(updateScope::addArgumentValue);
             updateScope.execute();
@@ -22,16 +19,13 @@ public class LiquibaseRunner {
             System.out.println("Liquibase migrations applied successfully.");
 
         } catch (LiquibaseException e) {
-
             throw new RuntimeException("Failed to run Liquibase update command", e);
-
         }
     }
 
     public static void runLiquibaseMigrations(PostgreSQLContainer<?> container) {
 
         try {
-
             Map<String, Object> scopeArgs = new HashMap<>();
             scopeArgs.put("url", container.getJdbcUrl());
             scopeArgs.put("username", container.getUsername());
@@ -45,9 +39,7 @@ public class LiquibaseRunner {
             System.out.println("Liquibase migrations applied successfully.");
 
         } catch (Exception e) {
-
             throw new RuntimeException("Failed to run Liquibase update command", e);
-
         }
 
     }

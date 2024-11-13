@@ -13,7 +13,6 @@ public class DataSourceManager {
     public static DataSource getDataSource(PostgreSQLContainer<?> postgreSQLContainer) {
 
         if (dataSource == null) {
-
             HikariConfig config = new HikariConfig();
             config.setJdbcUrl(postgreSQLContainer.getJdbcUrl());
             config.setUsername(postgreSQLContainer.getUsername());
@@ -21,11 +20,8 @@ public class DataSourceManager {
             config.setDriverClassName(postgreSQLContainer.getDriverClassName());
 
             dataSource = new HikariDataSource(config);
-
         }
 
         return dataSource;
-
     }
-
 }

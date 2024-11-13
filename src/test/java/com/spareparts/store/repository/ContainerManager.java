@@ -1,6 +1,5 @@
 package com.spareparts.store.repository;
 
-import org.testcontainers.containers.Container;
 import org.testcontainers.containers.PostgreSQLContainer;
 
 public class ContainerManager {
@@ -12,7 +11,7 @@ public class ContainerManager {
 
     private static PostgreSQLContainer<?> container;
 
-    public static PostgreSQLContainer<?>  getContainer() {
+    public static PostgreSQLContainer<?> getContainer() {
 
         if (container == null) {
             container = new PostgreSQLContainer<>(POSTGRES_IMAGE)
@@ -24,6 +23,5 @@ public class ContainerManager {
         }
 
         return container;
-
     }
 }

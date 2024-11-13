@@ -37,8 +37,8 @@ public class TrainerRepositoryImpl implements TrainerRepository {
                             resultSet.getString("name"),
                             resultSet.getString("email")));
                 }
-
             }
+
         } catch (SQLException e) {
             throw new RuntimeException("Error while finding Trainer by ID " + id, e);
         }
@@ -58,11 +58,12 @@ public class TrainerRepositoryImpl implements TrainerRepository {
 
             while (resultSet.next()) {
                 trainers.add(new Trainer(
-                        resultSet.getLong("id"),        // Assuming Trainer has an id field
+                        resultSet.getLong("id"),
                         resultSet.getString("name"),
                         resultSet.getString("email")
                 ));
             }
+
         } catch (SQLException e) {
             throw new RuntimeException("Error while retrieving all trainers", e);
         }
