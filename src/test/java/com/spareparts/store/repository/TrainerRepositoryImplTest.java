@@ -48,17 +48,24 @@ public class TrainerRepositoryImplTest {
 
     @Test
     void testSaveAndFindById() {
-        Trainer trainer = new Trainer(1L,"John Doe", "john.doe@example.com");
+        Trainer trainer = new Trainer(1L, "John Doe", "john.doe@example.com");
 
         // Act: Save the trainer
-        trainerRepository.save(trainer);
+        Optional<Trainer> savedTrainer = trainerRepository.save(trainer);
 
-        // Assert: Retrieve the trainer by ID and check fields
-        Optional<Trainer> result = trainerRepository.findById(trainer.id());
+        // Ensure that the trainer was saved and the ID is generated
+        assertTrue(savedTrainer.isPresent(), "Trainer should be saved and return a valid Optional.");
 
-        assertTrue(result.isPresent(), "Trainer should be found by ID");
-        assertEquals("John Doe", result.get().name());
-        assertEquals("john.doe@example.com", result.get().email());
+        // Act: Find the trainer by ID
+        Optional<Trainer> foundTrainer = trainerRepository.findById(savedTrainer.get().id());
+
+        // Assert: Check if the trainer is found by ID
+        assertTrue(foundTrainer.isPresent(), "Trainer should be found by ID");
+
+        // Assert: Check if the found trainer has the correct attributes
+        assertEquals(savedTrainer.get().id(), foundTrainer.get().id(), "Trainer IDs should match.");
+        assertEquals("John Doe", foundTrainer.get().name(), "Trainer names should match.");
+        assertEquals("john.doe@example.com", foundTrainer.get().email(), "Trainer emails should match.");
     }
 
     @Test
@@ -81,10 +88,14 @@ public class TrainerRepositoryImplTest {
     @Test
     void testDelete() {
         Trainer trainer = new Trainer(1L, "Alice Green", "alice.green@example.com");
-        trainerRepository.save(trainer);
+
+        Optional<Trainer> savedTrainer = trainerRepository.save(trainer);
+
+        // Ensure that the trainer was saved and the ID is generated
+        assertTrue(savedTrainer.isPresent(), "Trainer should be saved and return a valid Optional.");
 
         // Act: Delete the trainer
-        trainerRepository.delete(trainer.id());
+        trainerRepository.delete(savedTrainer.get().id());
 
         // Assert: Check that the trainer was deleted
         Optional<Trainer> result = trainerRepository.findById(trainer.id());
