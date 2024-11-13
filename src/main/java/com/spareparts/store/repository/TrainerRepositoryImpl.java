@@ -2,6 +2,7 @@ package com.spareparts.store.repository;
 
 import com.spareparts.store.model.Trainer;
 
+import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -12,13 +13,18 @@ import java.util.Optional;
 
 public class TrainerRepositoryImpl implements TrainerRepository {
 
-    private ConnectionManager connectionManager;
+    private final DataSource dataSource;
+
+    public TrainerRepositoryImpl(DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
 
     @Override
     public Optional<Trainer> findById(Long id) {
+
         String sql = "select * from trainers where id = ?";
 
-        try (Connection connection = connectionManager.getConnection();
+        try (Connection connection = dataSource.getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)
         ) {
             statement.setLong(1, id);
@@ -33,11 +39,8 @@ public class TrainerRepositoryImpl implements TrainerRepository {
                 }
 
             }
-
         } catch (SQLException e) {
-
             throw new RuntimeException("Error while finding Trainer by ID " + id, e);
-
         }
 
         return Optional.empty();
@@ -46,10 +49,10 @@ public class TrainerRepositoryImpl implements TrainerRepository {
     @Override
     public List<Trainer> findAll() {
 
-        String sql = "select * from trainers";
         List<Trainer> trainers = new ArrayList<>();
+        String sql = "select * from trainers";
 
-        try (Connection connection = connectionManager.getConnection();
+        try (Connection connection = dataSource.getConnection();
              PreparedStatement statement = connection.prepareStatement(sql);
              ResultSet resultSet = statement.executeQuery()) {
 
@@ -60,11 +63,8 @@ public class TrainerRepositoryImpl implements TrainerRepository {
                         resultSet.getString("email")
                 ));
             }
-
         } catch (SQLException e) {
-
             throw new RuntimeException("Error while retrieving all trainers", e);
-
         }
 
         return trainers;
@@ -75,7 +75,7 @@ public class TrainerRepositoryImpl implements TrainerRepository {
 
         String sql = "insert into trainers(name, email) values(?, ?)";
 
-        try (Connection connection = connectionManager.getConnection();
+        try (Connection connection = dataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
 
             preparedStatement.setString(1, trainer.name());
@@ -88,18 +88,17 @@ public class TrainerRepositoryImpl implements TrainerRepository {
             }
 
         } catch (SQLException e) {
-
             throw new RuntimeException("Error while saving trainer ID = " + trainer.id(), e);
-
         }
 
     }
 
     @Override
     public void update(Trainer trainer) {
+
         String sql = "update trainers set name = ?, email = ? where id = ?";
 
-        try (Connection connection = connectionManager.getConnection();
+        try (Connection connection = dataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
 
             preparedStatement.setString(1, trainer.name());
@@ -113,17 +112,17 @@ public class TrainerRepositoryImpl implements TrainerRepository {
             }
 
         } catch (SQLException e) {
-
             throw new RuntimeException("Error while updating trainer with ID = " + trainer.id(), e);
-
         }
+
     }
 
     @Override
     public void delete(Long id) {
+
         String sql = "DELETE FROM trainers WHERE id = ?";
 
-        try (Connection connection = connectionManager.getConnection();
+        try (Connection connection = dataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
 
             preparedStatement.setLong(1, id);
@@ -135,10 +134,7 @@ public class TrainerRepositoryImpl implements TrainerRepository {
             }
 
         } catch (SQLException e) {
-
             throw new RuntimeException("Error while deleting trainer with ID = " + id, e);
-
         }
     }
-
 }
