@@ -1,4 +1,4 @@
-package com.spareparts.store.repository;
+package com.spareparts.store.repository.jdbc;
 
 import com.spareparts.store.model.Trainer;
 

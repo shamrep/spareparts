@@ -1,6 +1,8 @@
 package com.spareparts.store.repository;
 
 import com.spareparts.store.model.Trainer;
+import com.spareparts.store.repository.jdbc.TrainerRepository;
+import com.spareparts.store.repository.jdbc.TrainerRepositoryImpl;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;

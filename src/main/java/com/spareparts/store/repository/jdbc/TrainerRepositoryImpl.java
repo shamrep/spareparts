@@ -1,4 +1,4 @@
-package com.spareparts.store.repository;
+package com.spareparts.store.repository.jdbc;
 
 import com.spareparts.store.model.Trainer;
 
@@ -14,6 +14,11 @@ import java.util.Optional;
 public class TrainerRepositoryImpl implements TrainerRepository {
 
     private final DataSource dataSource;
+
+    private final RowMapper<Trainer> trainerRowMapper = resultSet -> new Trainer(
+            resultSet.getLong("id"),
+            resultSet.getString("name"),
+            resultSet.getString("email"));
 
     public TrainerRepositoryImpl(DataSource dataSource) {
         this.dataSource = dataSource;
@@ -32,10 +37,7 @@ public class TrainerRepositoryImpl implements TrainerRepository {
             try (ResultSet resultSet = statement.executeQuery()) {
 
                 if (resultSet.next()) {
-                    return Optional.of(new Trainer(
-                            resultSet.getLong("id"),
-                            resultSet.getString("name"),
-                            resultSet.getString("email")));
+                    return Optional.of(trainerRowMapper.mapRow(resultSet));
                 }
             }
 
@@ -57,11 +59,7 @@ public class TrainerRepositoryImpl implements TrainerRepository {
              ResultSet resultSet = statement.executeQuery()) {
 
             while (resultSet.next()) {
-                trainers.add(new Trainer(
-                        resultSet.getLong("id"),
-                        resultSet.getString("name"),
-                        resultSet.getString("email")
-                ));
+                trainers.add(trainerRowMapper.mapRow(resultSet));
             }
 
         } catch (SQLException e) {
@@ -82,7 +80,7 @@ public class TrainerRepositoryImpl implements TrainerRepository {
             preparedStatement.setString(1, trainer.name());
             preparedStatement.setString(2, trainer.email());
 
-            try(ResultSet resultSet = preparedStatement.executeQuery()) {
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
 
                 if (resultSet.next()) {
                     Long generatedId = resultSet.getLong("id");

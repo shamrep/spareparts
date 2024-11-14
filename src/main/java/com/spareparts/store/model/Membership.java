@@ -1,4 +1,6 @@
 package com.spareparts.store.model;
 
-public class Membership {
+import java.time.LocalDateTime;
+
+public record Membership (long id, Client client, LocalDateTime startDate, LocalDateTime endDate, double cost){
 }
