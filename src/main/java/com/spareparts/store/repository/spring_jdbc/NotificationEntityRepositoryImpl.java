@@ -1,6 +1,6 @@
 package com.spareparts.store.repository.spring_jdbc;
 
-import com.spareparts.store.model.Notification;
+import com.spareparts.store.entities.NotificationEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -9,19 +9,17 @@ import org.springframework.jdbc.support.KeyHolder;
 import javax.sql.DataSource;
 import java.sql.PreparedStatement;
 import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
-import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 
-public class NotificationRepositoryImpl implements NotificationRepository {
+public class NotificationEntityRepositoryImpl implements NotificationEntityRepository {
 
-    private final RowMapper<Notification> notificationRowMapper = (rs, rowNum) -> {
+    private final RowMapper<NotificationEntity> notificationRowMapper = (rs, rowNum) -> {
 
 //        OffsetDateTime sendDateWithoutOffset = rs.getObject("send_date", OffsetDateTime.class);
 //        OffsetDateTime sendDateWithOffset = sendDateWithoutOffset.toInstant().atOffset(ZoneOffset.ofTotalSeconds(rs.getInt("send_date_offset")));
 
-        return new Notification(
+        return new NotificationEntity(
                 rs.getLong("id"),
                 rs.getLong("client_id"),
                 rs.getString("message"),
@@ -31,39 +29,39 @@ public class NotificationRepositoryImpl implements NotificationRepository {
 
     private final JdbcTemplate jdbcTemplate;
 
-    public NotificationRepositoryImpl(DataSource dataSource) {
+    public NotificationEntityRepositoryImpl(DataSource dataSource) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
-    public NotificationRepositoryImpl(JdbcTemplate template) {
+    public NotificationEntityRepositoryImpl(JdbcTemplate template) {
         this.jdbcTemplate = template;
     }
 
     @Override
-    public Optional<Notification> findById(long id) {
+    public Optional<NotificationEntity> findById(long id) {
         String sql = "select * from notifications where id = ?";
 
-        List<Notification> notifications = jdbcTemplate.query(sql, new Object[]{id}, notificationRowMapper);
+        List<NotificationEntity> notificationEntities = jdbcTemplate.query(sql, new Object[]{id}, notificationRowMapper);
 
-        return notifications.isEmpty() ? Optional.empty() : Optional.of(notifications.get(0));
+        return notificationEntities.isEmpty() ? Optional.empty() : Optional.of(notificationEntities.get(0));
     }
 
     @Override
-    public List<Notification> findAll() {
+    public List<NotificationEntity> findAll() {
         return List.of();
     }
 
     @Override
-    public long save(Notification notification) {
+    public long save(NotificationEntity notificationEntity) {
         String sql = "insert into notifications (client_id, message, send_date, is_read) values (?, ?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbcTemplate.update(con -> {
             PreparedStatement ps = con.prepareStatement(sql, new String[]{"id"});
-            ps.setLong(1, notification.getClientId());
-            ps.setString(2, notification.getMessage());
-            ps.setObject(3, notification.getSendDate());
-            ps.setBoolean(4, notification.isRead());
+            ps.setLong(1, notificationEntity.getClientId());
+            ps.setString(2, notificationEntity.getMessage());
+            ps.setObject(3, notificationEntity.getSendDate());
+            ps.setBoolean(4, notificationEntity.isRead());
 
             return ps;
         }, keyHolder);
@@ -76,7 +74,7 @@ public class NotificationRepositoryImpl implements NotificationRepository {
     }
 
     @Override
-    public void update(Notification notification) {
+    public void update(NotificationEntity notificationEntity) {
 
     }
 
@@ -86,7 +84,7 @@ public class NotificationRepositoryImpl implements NotificationRepository {
     }
 
     @Override
-    public List<Notification> findUnreadNotifications() {
+    public List<NotificationEntity> findUnreadNotifications() {
         return List.of();
     }
 }

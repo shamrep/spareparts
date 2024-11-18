@@ -1,6 +1,6 @@
 package com.spareparts.store.repository.jdbc;
 
-import com.spareparts.store.model.Trainer;
+import com.spareparts.store.entities.TrainerEntity;
 import com.spareparts.store.repository.util.ContainerManager;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
@@ -19,7 +19,7 @@ import static com.spareparts.store.repository.util.DataSourceManager.getDataSour
 import static com.spareparts.store.repository.util.LiquibaseRunner.runLiquibaseMigrations;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TrainerRepositoryImplTest {
+public class TrainerEntityRepositoryImplTest {
 
     static PostgreSQLContainer<?> testPostgreSQLContainer;
     static TrainerRepository testTrainerRepository;
@@ -69,16 +69,16 @@ public class TrainerRepositoryImplTest {
 
     @Test
     void testSaveAndFindById() {
-        Trainer trainer = new Trainer(null, "John Doe", "john.doe@example.com");
+        TrainerEntity trainerEntity = new TrainerEntity(null, "John Doe", "john.doe@example.com");
 
         // Act: Save the trainer
-        Optional<Trainer> savedTrainer = testTrainerRepository.save(trainer);
+        Optional<TrainerEntity> savedTrainer = testTrainerRepository.save(trainerEntity);
 
         // Ensure that the trainer was saved and the ID is generated
         assertTrue(savedTrainer.isPresent(), "Trainer should be saved and return a valid Optional.");
 
         // Act: Find the trainer by ID
-        Optional<Trainer> foundTrainer = testTrainerRepository.findById(savedTrainer.get().id());
+        Optional<TrainerEntity> foundTrainer = testTrainerRepository.findById(savedTrainer.get().id());
 
         // Assert: Check if the trainer is found by ID
         assertTrue(foundTrainer.isPresent(), "Trainer should be found by ID.");
@@ -91,32 +91,32 @@ public class TrainerRepositoryImplTest {
 
     @Test
     void testFindAll() {
-        Trainer trainer1 = new Trainer(null, "Jane Smith", "jane.smith@example.com");
-        Trainer trainer2 = new Trainer(null, "Bob Brown", "bob.brown@example.com");
+        TrainerEntity trainerEntity1 = new TrainerEntity(null, "Jane Smith", "jane.smith@example.com");
+        TrainerEntity trainerEntity2 = new TrainerEntity(null, "Bob Brown", "bob.brown@example.com");
 
-        Optional<Trainer> savedTrainer1 = testTrainerRepository.save(trainer1);
-        Optional<Trainer> savedTrainer2 = testTrainerRepository.save(trainer2);
+        Optional<TrainerEntity> savedTrainer1 = testTrainerRepository.save(trainerEntity1);
+        Optional<TrainerEntity> savedTrainer2 = testTrainerRepository.save(trainerEntity2);
 
         // Ensure trainers were saved
         assertTrue(savedTrainer1.isPresent(), "Trainer1 should be saved and present.");
         assertTrue(savedTrainer2.isPresent(), "Trainer2 should be saved and present.");
 
         // Act: Retrieve all trainers
-        List<Trainer> trainers = testTrainerRepository.findAll();
+        List<TrainerEntity> trainerEntities = testTrainerRepository.findAll();
 
         // Assert: Check the size and contents of the trainers list
-        assertEquals(2, trainers.size(), "Should find 2 trainers");
+        assertEquals(2, trainerEntities.size(), "Should find 2 trainers");
 
         // Assert: Verify that the saved trainers are in the list
-        assertTrue(trainers.contains(savedTrainer1.get()), "List should contain savedTrainer1");
-        assertTrue(trainers.contains(savedTrainer2.get()), "List should contain savedTrainer2");
+        assertTrue(trainerEntities.contains(savedTrainer1.get()), "List should contain savedTrainer1");
+        assertTrue(trainerEntities.contains(savedTrainer2.get()), "List should contain savedTrainer2");
     }
 
     @Test
     void testDelete() {
-        Trainer trainer = new Trainer(null, "Alice Green", "alice.green@example.com");
+        TrainerEntity trainerEntity = new TrainerEntity(null, "Alice Green", "alice.green@example.com");
 
-        Optional<Trainer> savedTrainer = testTrainerRepository.save(trainer);
+        Optional<TrainerEntity> savedTrainer = testTrainerRepository.save(trainerEntity);
 
         // Ensure that the trainer was saved and the ID is generated
         assertTrue(savedTrainer.isPresent(), "Trainer should be saved and return a valid Optional.");
@@ -125,7 +125,7 @@ public class TrainerRepositoryImplTest {
         testTrainerRepository.delete(savedTrainer.get().id());
 
         // Assert: Check that the trainer was deleted
-        Optional<Trainer> result = testTrainerRepository.findById(savedTrainer.get().id());
+        Optional<TrainerEntity> result = testTrainerRepository.findById(savedTrainer.get().id());
         assertFalse(result.isPresent(), "Trainer should no longer be present after deletion");
     }
 }

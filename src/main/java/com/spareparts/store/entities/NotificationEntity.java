@@ -1,4 +1,4 @@
-package com.spareparts.store.model;
+package com.spareparts.store.entities;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -8,7 +8,7 @@ import java.time.temporal.ChronoUnit;
 
 @AllArgsConstructor
 @Getter
-public class Notification {
+public class NotificationEntity {
     private Long id;
     private long clientId;
     private String message;

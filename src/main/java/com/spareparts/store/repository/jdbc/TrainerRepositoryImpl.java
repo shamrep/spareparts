@@ -1,6 +1,6 @@
 package com.spareparts.store.repository.jdbc;
 
-import com.spareparts.store.model.Trainer;
+import com.spareparts.store.entities.TrainerEntity;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -15,7 +15,7 @@ public class TrainerRepositoryImpl implements TrainerRepository {
 
     private final DataSource dataSource;
 
-    private final RowMapper<Trainer> trainerRowMapper = resultSet -> new Trainer(
+    private final RowMapper<TrainerEntity> trainerRowMapper = resultSet -> new TrainerEntity(
             resultSet.getLong("id"),
             resultSet.getString("name"),
             resultSet.getString("email"));
@@ -25,7 +25,7 @@ public class TrainerRepositoryImpl implements TrainerRepository {
     }
 
     @Override
-    public Optional<Trainer> findById(Long id) {
+    public Optional<TrainerEntity> findById(Long id) {
 
         String sql = "select * from trainers where id = ?";
 
@@ -49,9 +49,9 @@ public class TrainerRepositoryImpl implements TrainerRepository {
     }
 
     @Override
-    public List<Trainer> findAll() {
+    public List<TrainerEntity> findAll() {
 
-        List<Trainer> trainers = new ArrayList<>();
+        List<TrainerEntity> trainerEntities = new ArrayList<>();
         String sql = "select * from trainers";
 
         try (Connection connection = dataSource.getConnection();
@@ -59,54 +59,54 @@ public class TrainerRepositoryImpl implements TrainerRepository {
              ResultSet resultSet = statement.executeQuery()) {
 
             while (resultSet.next()) {
-                trainers.add(trainerRowMapper.mapRow(resultSet));
+                trainerEntities.add(trainerRowMapper.mapRow(resultSet));
             }
 
         } catch (SQLException e) {
             throw new RuntimeException("Error while retrieving all trainers", e);
         }
 
-        return trainers;
+        return trainerEntities;
     }
 
     @Override
-    public Optional<Trainer> save(Trainer trainer) {
+    public Optional<TrainerEntity> save(TrainerEntity trainerEntity) {
 
         String sql = "insert into trainers(name, email) values(?, ?) returning id";
 
         try (Connection connection = dataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
 
-            preparedStatement.setString(1, trainer.name());
-            preparedStatement.setString(2, trainer.email());
+            preparedStatement.setString(1, trainerEntity.name());
+            preparedStatement.setString(2, trainerEntity.email());
 
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
 
                 if (resultSet.next()) {
                     Long generatedId = resultSet.getLong("id");
 
-                    return Optional.of(new Trainer(generatedId, trainer.name(), trainer.email()));
+                    return Optional.of(new TrainerEntity(generatedId, trainerEntity.name(), trainerEntity.email()));
                 }
             }
 
             return Optional.empty();
 
         } catch (SQLException e) {
-            throw new RuntimeException("Error while saving trainer email = " + trainer.email(), e);
+            throw new RuntimeException("Error while saving trainer email = " + trainerEntity.email(), e);
         }
     }
 
     @Override
-    public void update(Trainer trainer) {
+    public void update(TrainerEntity trainerEntity) {
 
         String sql = "update trainers set name = ?, email = ? where id = ?";
 
         try (Connection connection = dataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
 
-            preparedStatement.setString(1, trainer.name());
-            preparedStatement.setString(2, trainer.email());
-            preparedStatement.setLong(3, trainer.id());
+            preparedStatement.setString(1, trainerEntity.name());
+            preparedStatement.setString(2, trainerEntity.email());
+            preparedStatement.setLong(3, trainerEntity.id());
 
             int rowsAffected = preparedStatement.executeUpdate();
 
@@ -115,7 +115,7 @@ public class TrainerRepositoryImpl implements TrainerRepository {
             }
 
         } catch (SQLException e) {
-            throw new RuntimeException("Error while updating trainer with ID = " + trainer.id(), e);
+            throw new RuntimeException("Error while updating trainer with ID = " + trainerEntity.id(), e);
         }
 
     }

@@ -1,15 +1,15 @@
 package com.spareparts.store.repository.jdbc;
 
-import com.spareparts.store.model.Trainer;
+import com.spareparts.store.entities.TrainerEntity;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface TrainerRepository {
-    Optional<Trainer> findById(Long id);
-    List<Trainer> findAll();
-    Optional<Trainer> save(Trainer trainer);
-    void update(Trainer trainer);
+    Optional<TrainerEntity> findById(Long id);
+    List<TrainerEntity> findAll();
+    Optional<TrainerEntity> save(TrainerEntity trainerEntity);
+    void update(TrainerEntity trainerEntity);
     void delete(Long id);
     void deleteAll();
 }
