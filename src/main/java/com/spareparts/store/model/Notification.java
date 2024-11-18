@@ -3,14 +3,14 @@ package com.spareparts.store.model;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 @AllArgsConstructor
 @Getter
 public class Notification {
-    private long id;
+    private Long id;
     private long clientId;
     private String message;
-    private LocalDateTime sendDate;
+    private OffsetDateTime sendDate;
     private boolean isRead;
 }

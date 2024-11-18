@@ -1,8 +1,7 @@
-package com.spareparts.store.repository;
+package com.spareparts.store.repository.jdbc;
 
 import com.spareparts.store.model.Trainer;
-import com.spareparts.store.repository.jdbc.TrainerRepository;
-import com.spareparts.store.repository.jdbc.TrainerRepositoryImpl;
+import com.spareparts.store.repository.util.ContainerManager;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -16,8 +15,8 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
-import static com.spareparts.store.repository.DataSourceManager.getDataSource;
-import static com.spareparts.store.repository.LiquibaseRunner.runLiquibaseMigrations;
+import static com.spareparts.store.repository.util.DataSourceManager.getDataSource;
+import static com.spareparts.store.repository.util.LiquibaseRunner.runLiquibaseMigrations;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TrainerRepositoryImplTest {
@@ -82,7 +81,7 @@ public class TrainerRepositoryImplTest {
         Optional<Trainer> foundTrainer = testTrainerRepository.findById(savedTrainer.get().id());
 
         // Assert: Check if the trainer is found by ID
-        assertTrue(foundTrainer.isPresent(), "Trainer should be found by ID");
+        assertTrue(foundTrainer.isPresent(), "Trainer should be found by ID.");
 
         // Assert: Check if the found trainer has the correct attributes
         assertEquals(savedTrainer.get().id(), foundTrainer.get().id(), "Trainer IDs should match.");

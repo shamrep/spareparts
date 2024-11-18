@@ -1,4 +1,4 @@
-package com.spareparts.store.repository;
+package com.spareparts.store.repository.util;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;

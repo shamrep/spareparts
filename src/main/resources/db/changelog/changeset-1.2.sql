@@ -1,5 +1,7 @@
-create table trainers (
+create table notifications (
     id serial primary key,
-    name varchar(100) not null,
-    email varchar(100) not null
+    client_id bigint not null,
+    message varchar(1000) not null,
+    send_date timestamptz not null,
+    is_read boolean not null default false
 );

@@ -1,4 +1,4 @@
-package com.spareparts.store.repository;
+package com.spareparts.store.repository.util;
 
 import liquibase.command.CommandScope;
 import liquibase.exception.LiquibaseException;
