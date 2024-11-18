@@ -8,7 +8,7 @@ import java.util.Optional;
 public interface ClientEntityRepository {
     Optional<ClientEntity> findById(Long id);
     List<ClientEntity> findAll();
-    void save(ClientEntity clientEntity);
+    ClientEntity save(ClientEntity clientEntity);
     void update(ClientEntity clientEntity);
     void delete(Long id);
 }

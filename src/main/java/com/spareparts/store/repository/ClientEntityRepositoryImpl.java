@@ -19,8 +19,8 @@ public class ClientEntityRepositoryImpl implements ClientEntityRepository {
     }
 
     @Override
-    public void save(ClientEntity clientEntity) {
-
+    public ClientEntity save(ClientEntity clientEntity) {
+        return null;
     }
 
     @Override

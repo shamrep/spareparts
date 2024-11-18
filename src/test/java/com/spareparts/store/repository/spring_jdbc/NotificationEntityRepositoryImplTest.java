@@ -76,14 +76,15 @@ public class NotificationEntityRepositoryImplTest {
     @Test
     void findByIdTest() {
         testJdbcTemplate.execute(
-                "insert into clients (email) values ('client1@gmail.com');" +
-                "insert into clients (email) values ('client2@gmail.com');");
+                "insert into clients (email, name) values ('client1@gmail.com', 'bot1');" +
+                "insert into clients (email, name) values ('client2@gmail.com', 'bot2');");
 
         Optional<ClientEntity> client1 = testJdbcTemplate.
                 query("select * from clients where email = 'client1@gmail.com';",
                         (rs, rowNum) -> new ClientEntity(
                                 rs.getLong("id"),
-                                rs.getString("email"))).stream().findFirst();
+                                rs.getString("email"),
+                                rs.getString("name"))).stream().findFirst();
 
         NotificationEntity notificationEntity1 = new NotificationEntity(
                 null,

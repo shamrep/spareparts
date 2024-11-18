@@ -8,4 +8,5 @@ import lombok.Getter;
 public class ClientEntity {
     private long id;
     private String email;
+    private String name;
 }
