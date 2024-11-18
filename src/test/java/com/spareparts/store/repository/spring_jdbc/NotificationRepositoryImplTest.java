@@ -19,6 +19,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -90,7 +91,7 @@ public class NotificationRepositoryImplTest {
                 null,
                 client1.get().getId(),
                 "test message for client 1",
-                OffsetDateTime.now(),
+                OffsetDateTime.now(ZoneOffset.UTC),
                 false);
 
         long notification1Id = testNotificationRepository.save(notification1);
