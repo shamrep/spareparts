@@ -1,7 +1,7 @@
 package com.spareparts.store.repository.spring_jdbc;
 
-import com.spareparts.store.entities.ClientEntity;
-import com.spareparts.store.entities.NotificationEntity;
+import com.spareparts.store.entity.ClientEntity;
+import com.spareparts.store.entity.NotificationEntity;
 import com.spareparts.store.repository.util.ContainerManager;
 import com.spareparts.store.repository.util.DataSourceManager;
 import com.spareparts.store.repository.util.JdbcTemplateManager;
