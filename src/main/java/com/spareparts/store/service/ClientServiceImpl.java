@@ -1,15 +1,15 @@
 package com.spareparts.store.service;
 
 import com.spareparts.store.service.model.Client;
-import com.spareparts.store.repository.ClientEntityRepository;
+import com.spareparts.store.repository.ClientRepository;
 
 import java.util.List;
 
 public class ClientServiceImpl {
 
-    private final ClientEntityRepository clientRepository;
+    private final ClientRepository clientRepository;
 
-    public ClientServiceImpl(ClientEntityRepository clientRepository) {
+    public ClientServiceImpl(ClientRepository clientRepository) {
         this.clientRepository = clientRepository;
     }
 

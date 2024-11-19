@@ -1,6 +1,19 @@
 package com.spareparts.store.repository.entity;
 
-import java.time.LocalDateTime;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
-public record MembershipEntity(long id, ClientEntity clientEntity, LocalDateTime startDate, LocalDateTime endDate, double cost){
+import java.math.BigDecimal;
+import java.time.OffsetDateTime;
+
+@AllArgsConstructor
+@Getter
+public class MembershipEntity {
+    private Long id;
+    private ClientEntity client;
+    //todo: maybe enum?
+    private MembershipType type; // e.g., Monthly, Annual
+    private OffsetDateTime startDate;
+    private OffsetDateTime endDate;
+    private BigDecimal price;
 }

@@ -5,7 +5,7 @@ import com.spareparts.store.repository.entity.ClientEntity;
 import java.util.List;
 import java.util.Optional;
 
-public class ClientEntityRepositoryImpl implements ClientEntityRepository {
+public class ClientRepositoryImpl implements ClientRepository {
 
     @Override
     public Optional<ClientEntity> findById(Long id) {

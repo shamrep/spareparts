@@ -2,6 +2,7 @@ package com.spareparts.store.repository.jdbc;
 
 import com.spareparts.store.repository.entity.TrainerEntity;
 import com.spareparts.store.repository.util.ContainerManager;
+import com.spareparts.store.repository.util.DatabaseTestManager;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -9,22 +10,22 @@ import org.junit.jupiter.api.Test;
 import org.testcontainers.containers.PostgreSQLContainer;
 
 import javax.sql.DataSource;
-
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
-import static com.spareparts.store.repository.util.DataSourceManager.getDataSource;
 import static com.spareparts.store.repository.util.LiquibaseRunner.runLiquibaseMigrations;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TrainerEntityRepositoryImplTest {
+class TrainerEntityRepositoryImplTest {
 
     static PostgreSQLContainer<?> testPostgreSQLContainer;
     static TrainerRepository testTrainerRepository;
     static DataSource testDataSource;
     static Connection testConnection;
+
+    static DatabaseTestManager databaseTestManager;
 
     @BeforeAll
     static void setUp() {
@@ -32,9 +33,11 @@ public class TrainerEntityRepositoryImplTest {
         testPostgreSQLContainer = ContainerManager.getContainer();
         testPostgreSQLContainer.start();
 
+        databaseTestManager = new DatabaseTestManager(testPostgreSQLContainer);
+
         runLiquibaseMigrations(testPostgreSQLContainer);
 
-        testDataSource = getDataSource(testPostgreSQLContainer);
+        testDataSource = databaseTestManager.getDataSource();
 
         testTrainerRepository = new TrainerRepositoryImpl(testDataSource);
 
@@ -42,17 +45,17 @@ public class TrainerEntityRepositoryImplTest {
             testConnection = testDataSource.getConnection();
             testConnection.setAutoCommit(false); // Disable auto-commit for rollback control
         } catch (SQLException e) {
-            throw new RuntimeException("Failed to set up test transaction", e);
+            throw new RuntimeException("Failed to set up test transaction.", e);
         }
     }
 
     @AfterAll
-    public static void tearDown() {
+    static void tearDown() {
 
         try {
             testConnection.close();
         } catch (SQLException e) {
-            throw new RuntimeException("Failed to close test connection", e);
+            throw new RuntimeException("Failed to close test connection.", e);
         }
 
         testPostgreSQLContainer.stop();

@@ -3,9 +3,7 @@ package com.spareparts.store.repository.spring_jdbc;
 import com.spareparts.store.repository.entity.ClientEntity;
 import com.spareparts.store.repository.entity.NotificationEntity;
 import com.spareparts.store.repository.util.ContainerManager;
-import com.spareparts.store.repository.util.DataSourceManager;
-import com.spareparts.store.repository.util.JdbcTemplateManager;
-import com.spareparts.store.repository.util.LiquibaseRunner;
+import com.spareparts.store.repository.util.DatabaseTestManager;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -15,20 +13,19 @@ import org.testcontainers.containers.PostgreSQLContainer;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class NotificationEntityRepositoryImplTest {
+//@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+class NotificationEntityRepositoryImplTest {
 
     static PostgreSQLContainer<?> testPostgreSQLContainer;
     static NotificationEntityRepository testNotificationEntityRepository;
-    static DataSource testDataSource;
-    static Connection testConnection;
     static JdbcTemplate testJdbcTemplate;
+    static DatabaseTestManager databaseTestManager;
 
     @BeforeAll
     static void setUp() {
@@ -36,48 +33,34 @@ public class NotificationEntityRepositoryImplTest {
         testPostgreSQLContainer = ContainerManager.getContainer();
         testPostgreSQLContainer.start();
 
-        LiquibaseRunner.runLiquibaseMigrations(testPostgreSQLContainer);
+        databaseTestManager = new DatabaseTestManager(testPostgreSQLContainer);
 
-        testDataSource = DataSourceManager.getDataSource(testPostgreSQLContainer);
+        databaseTestManager.runLiquibaseMigration();
+        databaseTestManager.setConnectionAutoCommit(false);
 
-        testJdbcTemplate = JdbcTemplateManager.getJdbcTemplate(testDataSource);
+        testJdbcTemplate = databaseTestManager.getJdbcTemplate();
 
         testNotificationEntityRepository = new NotificationEntityRepositoryImpl(testJdbcTemplate);
-
-        try {
-            testConnection = testDataSource.getConnection();
-            testConnection.setAutoCommit(false);
-        } catch (SQLException e) {
-            throw new RuntimeException("Failed to set up test transaction", e);
-        }
     }
 
     @AfterAll
-    public static void tearDown() {
-
-        try {
-            testConnection.close();
-        } catch (SQLException e) {
-            throw new RuntimeException("Failed to close test connection", e);
-        }
+    static void tearDown() {
 
         testPostgreSQLContainer.stop();
     }
 
     @AfterEach
     void rollBackTransaction() {
-        try {
-            testConnection.rollback();
-        } catch (SQLException e) {
-            throw new RuntimeException("Failed to roll back test transaction.", e);
-        }
+
+        databaseTestManager.rollbackTransaction();
     }
 
     @Test
-    void findByIdTest() {
+    void saveAndThenFindNotificationById() {
+
         testJdbcTemplate.execute(
                 "insert into clients (email, name) values ('client1@gmail.com', 'bot1');" +
-                "insert into clients (email, name) values ('client2@gmail.com', 'bot2');");
+                        "insert into clients (email, name) values ('client2@gmail.com', 'bot2');");
 
         Optional<ClientEntity> client1 = testJdbcTemplate.
                 query("select * from clients where email = 'client1@gmail.com';",
@@ -104,6 +87,5 @@ public class NotificationEntityRepositoryImplTest {
         assertEquals("test message for client 1", foundNotification1.get().getMessage(), "Messages should match.");
         assertEquals(notificationEntity1.getSendDate(), foundNotification1.get().getSendDate(), "Dates should match.");
         assertFalse(foundNotification1.get().isRead(), "Value should be false.");
-
     }
 }
