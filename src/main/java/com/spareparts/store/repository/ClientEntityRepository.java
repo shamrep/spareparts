@@ -1,6 +1,6 @@
 package com.spareparts.store.repository;
 
-import com.spareparts.store.entity.ClientEntity;
+import com.spareparts.store.repository.entity.ClientEntity;
 
 import java.util.List;
 import java.util.Optional;

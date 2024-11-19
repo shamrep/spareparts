@@ -1,6 +1,6 @@
 package com.spareparts.store.repository.jdbc;
 
-import com.spareparts.store.entity.TrainerEntity;
+import com.spareparts.store.repository.entity.TrainerEntity;
 
 import java.util.List;
 import java.util.Optional;

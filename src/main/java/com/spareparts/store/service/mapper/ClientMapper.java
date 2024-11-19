@@ -1,7 +1,7 @@
-package com.spareparts.store.mapper;
+package com.spareparts.store.service.mapper;
 
-import com.spareparts.store.dto.ClientDTO;
-import com.spareparts.store.entity.ClientEntity;
+import com.spareparts.store.controller.dto.ClientDTO;
+import com.spareparts.store.repository.entity.ClientEntity;
 
 public class ClientMapper {
 

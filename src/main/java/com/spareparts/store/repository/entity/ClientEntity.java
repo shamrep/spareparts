@@ -1,4 +1,4 @@
-package com.spareparts.store.entity;
+package com.spareparts.store.repository.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

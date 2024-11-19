@@ -1,12 +1,9 @@
 package com.spareparts.store.service;
 
-import com.spareparts.store.dto.ClientDTO;
-import com.spareparts.store.mapper.ClientMapper;
-import com.spareparts.store.model.Client;
+import com.spareparts.store.service.model.Client;
 import com.spareparts.store.repository.ClientEntityRepository;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class ClientServiceImpl {
 

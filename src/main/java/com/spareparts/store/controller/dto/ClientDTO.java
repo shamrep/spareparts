@@ -1,4 +1,4 @@
-package com.spareparts.store.dto;
+package com.spareparts.store.controller.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

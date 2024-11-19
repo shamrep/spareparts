@@ -1,6 +1,6 @@
 package com.spareparts.store.repository.spring_jdbc;
 
-import com.spareparts.store.entity.NotificationEntity;
+import com.spareparts.store.repository.entity.NotificationEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;

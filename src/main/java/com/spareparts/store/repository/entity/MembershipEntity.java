@@ -1,4 +1,4 @@
-package com.spareparts.store.entity;
+package com.spareparts.store.repository.entity;
 
 import java.time.LocalDateTime;
 
