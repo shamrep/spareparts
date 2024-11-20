@@ -22,19 +22,14 @@ import static org.junit.jupiter.api.Assertions.*;
 //@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class NotificationEntityRepositoryImplTest {
 
-    static PostgreSQLContainer<?> testPostgreSQLContainer;
     static NotificationEntityRepository testNotificationEntityRepository;
+    static DatabaseTestManager databaseTestManager = new DatabaseTestManager();;
     static JdbcTemplate testJdbcTemplate;
-    static DatabaseTestManager databaseTestManager;
 
     @BeforeAll
     static void setUp() {
 
-        testPostgreSQLContainer = ContainerManager.getContainer();
-        testPostgreSQLContainer.start();
-
-        databaseTestManager = new DatabaseTestManager(testPostgreSQLContainer);
-
+        databaseTestManager.startContainer();
         databaseTestManager.runLiquibaseMigration();
         databaseTestManager.setConnectionAutoCommit(false);
 
@@ -46,7 +41,7 @@ class NotificationEntityRepositoryImplTest {
     @AfterAll
     static void tearDown() {
 
-        testPostgreSQLContainer.stop();
+        databaseTestManager.stopContainer();
     }
 
     @AfterEach

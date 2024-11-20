@@ -20,58 +20,34 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class TrainerEntityRepositoryImplTest {
 
-    static PostgreSQLContainer<?> testPostgreSQLContainer;
     static TrainerRepository testTrainerRepository;
-    static DataSource testDataSource;
-    static Connection testConnection;
-
-    static DatabaseTestManager databaseTestManager;
+    static DatabaseTestManager databaseTestManager = new DatabaseTestManager();
 
     @BeforeAll
     static void setUp() {
 
-        testPostgreSQLContainer = ContainerManager.getContainer();
-        testPostgreSQLContainer.start();
+        databaseTestManager.startContainer();
+        databaseTestManager.runLiquibaseMigration();
+        databaseTestManager.setConnectionAutoCommit(false);
 
-        databaseTestManager = new DatabaseTestManager(testPostgreSQLContainer);
-
-        runLiquibaseMigrations(testPostgreSQLContainer);
-
-        testDataSource = databaseTestManager.getDataSource();
-
-        testTrainerRepository = new TrainerRepositoryImpl(testDataSource);
-
-        try {
-            testConnection = testDataSource.getConnection();
-            testConnection.setAutoCommit(false); // Disable auto-commit for rollback control
-        } catch (SQLException e) {
-            throw new RuntimeException("Failed to set up test transaction.", e);
-        }
+        testTrainerRepository = new TrainerRepositoryImpl(databaseTestManager.getDataSource());
     }
 
     @AfterAll
     static void tearDown() {
 
-        try {
-            testConnection.close();
-        } catch (SQLException e) {
-            throw new RuntimeException("Failed to close test connection.", e);
-        }
-
-        testPostgreSQLContainer.stop();
+        databaseTestManager.stopContainer();
     }
 
     @AfterEach
     void rollBackTransaction() {
-        try {
-            testConnection.rollback();
-        } catch (SQLException e) {
-            throw new RuntimeException("Failed to roll back test transaction", e);
-        }
+
+        databaseTestManager.rollbackTransaction();
     }
 
     @Test
     void testSaveAndFindById() {
+
         TrainerEntity trainerEntity = new TrainerEntity(null, "John Doe", "john.doe@example.com");
 
         // Act: Save the trainer
@@ -94,6 +70,7 @@ class TrainerEntityRepositoryImplTest {
 
     @Test
     void testFindAll() {
+
         TrainerEntity trainerEntity1 = new TrainerEntity(null, "Jane Smith", "jane.smith@example.com");
         TrainerEntity trainerEntity2 = new TrainerEntity(null, "Bob Brown", "bob.brown@example.com");
 
@@ -117,6 +94,7 @@ class TrainerEntityRepositoryImplTest {
 
     @Test
     void testDelete() {
+
         TrainerEntity trainerEntity = new TrainerEntity(null, "Alice Green", "alice.green@example.com");
 
         Optional<TrainerEntity> savedTrainer = testTrainerRepository.save(trainerEntity);

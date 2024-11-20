@@ -18,7 +18,7 @@ class MembershipRepositoryImplTest {
         testPostgresSQLContainer = ContainerManager.getContainer();
         testPostgresSQLContainer.start();
 
-        databaseTestManager = new DatabaseTestManager(testPostgresSQLContainer);
+        databaseTestManager = new DatabaseTestManager();
         databaseTestManager.runLiquibaseMigration();
         databaseTestManager.setConnectionAutoCommit(false);
 
