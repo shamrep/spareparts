@@ -1,17 +1,12 @@
 package com.spareparts.store.repository.jdbc;
 
 import com.spareparts.store.repository.entity.TrainerEntity;
-import com.spareparts.store.repository.util.ContainerManager;
 import com.spareparts.store.repository.util.DatabaseTestManager;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.testcontainers.containers.PostgreSQLContainer;
 
-import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 

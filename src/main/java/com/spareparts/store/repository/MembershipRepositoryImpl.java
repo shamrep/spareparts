@@ -24,8 +24,20 @@ public class MembershipRepositoryImpl implements MembershipRepository {
     }
 
     @Override
-    public void save(MembershipEntity membership) {
+    public long save(MembershipEntity membership) {
 
+        return jdbcClient
+                .sql("""
+                        insert into memberships (client_id, type, start_date, end_date, price) 
+                        values (?, CAST(? AS membership_type), ?, ?, ?) returning id;
+                        """)
+                .param(1, membership.getClientId())
+                .param(2, membership.getType().name())
+                .param(3, membership.getStartDate())
+                .param(4, membership.getEndDate())
+                .param(5, membership.getPrice())
+                .query(Long.class)
+                .single();
     }
 
     @Override

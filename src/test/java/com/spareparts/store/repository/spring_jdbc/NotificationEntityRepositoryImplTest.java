@@ -2,17 +2,13 @@ package com.spareparts.store.repository.spring_jdbc;
 
 import com.spareparts.store.repository.entity.ClientEntity;
 import com.spareparts.store.repository.entity.NotificationEntity;
-import com.spareparts.store.repository.util.ContainerManager;
 import com.spareparts.store.repository.util.DatabaseTestManager;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.testcontainers.containers.PostgreSQLContainer;
 
-import javax.sql.DataSource;
-import java.sql.Connection;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.Optional;

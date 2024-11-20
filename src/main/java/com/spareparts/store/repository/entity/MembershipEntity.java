@@ -10,7 +10,7 @@ import java.time.OffsetDateTime;
 @Getter
 public class MembershipEntity {
     private Long id;
-    private ClientEntity client;
+    private long clientId;
     //todo: maybe enum?
     private MembershipType type; // e.g., Monthly, Annual
     private OffsetDateTime startDate;

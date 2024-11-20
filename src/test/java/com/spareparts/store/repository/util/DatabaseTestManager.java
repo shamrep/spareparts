@@ -3,6 +3,7 @@ package com.spareparts.store.repository.util;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.simple.JdbcClient;
 import org.testcontainers.containers.PostgreSQLContainer;
 
 import javax.sql.DataSource;
@@ -15,6 +16,7 @@ public class DatabaseTestManager {
     private DataSource dataSource;
     private Connection connection;
     private JdbcTemplate jdbcTemplate;
+    private JdbcClient jdbcClient;
 
     public DatabaseTestManager() {
 
@@ -67,6 +69,15 @@ public class DatabaseTestManager {
         }
 
         return jdbcTemplate;
+    }
+
+    public JdbcClient getJdbcClient() {
+
+        if (jdbcClient == null) {
+            jdbcClient = JdbcClient.create(getDataSource());
+        }
+
+        return jdbcClient;
     }
 
     public void setConnectionAutoCommit(boolean autoCommit) {
