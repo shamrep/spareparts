@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.jdbc.core.simple.JdbcClient;
 
 import java.math.BigDecimal;
+import java.time.Clock;
 import java.time.OffsetDateTime;
 import java.util.Optional;
 
@@ -72,6 +73,48 @@ class MembershipRepositoryImplTest {
         Optional<MembershipEntity> foundMembership = membershipRepository.findById(generatedMembershipId);
 
         Assertions.assertThat(foundMembership).isPresent();
+//        Assertions.assertThat(foundMembership).
+    }
 
+    @Test
+    void updateAndFetchMembership() {
+
+        long clientGeneratedId = jdbcClient
+                .sql("insert into clients (email, name) values ('client1@gmail.com', 'bot1') returning id;")
+                .query(Long.class)
+                .single();
+
+        long membershipGeneratedId = jdbcClient.sql("""
+                        insert into memberships (client_id, type, start_date, end_date, price)
+                        values (:clientId, 'MONTHLY', '2024-11-20T08:00:00Z', '2024-12-20T08:00:00Z', 99.99)
+                        returning id;
+                        """)
+                .param("clientId", clientGeneratedId)
+                .query(Long.class)
+                .single();
+
+        Optional<MembershipEntity> foundOptionalMembership = membershipRepository.findById(membershipGeneratedId);
+        Assertions.assertThat(foundOptionalMembership)
+                .as("Membership with ID %s should exist", membershipGeneratedId)
+                .isPresent();
+
+        MembershipEntity modifiedMembership = new MembershipEntity(
+                membershipGeneratedId,
+                clientGeneratedId,
+                MembershipType.ANNUAL,
+                OffsetDateTime.now(Clock.systemUTC()),
+                OffsetDateTime.now(Clock.systemUTC()).plusMonths(12),
+                new BigDecimal("299.99")
+        );
+
+        membershipRepository.update(modifiedMembership);
+        foundOptionalMembership = membershipRepository.findById(membershipGeneratedId);
+
+        Assertions.assertThat(foundOptionalMembership)
+                .as("Updated membership with ID %s should exist", membershipGeneratedId)
+                .isPresent();
+        Assertions.assertThat(foundOptionalMembership.get())
+                .as("Updated membership should match the modified membership entity")
+                .isEqualTo(modifiedMembership);
     }
 }

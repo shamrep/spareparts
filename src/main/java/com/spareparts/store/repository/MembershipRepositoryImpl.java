@@ -9,15 +9,12 @@ import java.util.Optional;
 @AllArgsConstructor
 public class MembershipRepositoryImpl implements MembershipRepository {
 
-    //    private JdbcTemplate jdbcTemplate;
     private JdbcClient jdbcClient;
 
     @Override
     public Optional<MembershipEntity> findById(Long id) {
 
-        String sql = "select * from memberships where id = ?;";
-
-        return jdbcClient.sql(sql)
+        return jdbcClient.sql("select * from memberships where id = ?;")
                 .param(id)
                 .query(MembershipEntity.class)
                 .optional();
@@ -40,9 +37,26 @@ public class MembershipRepositoryImpl implements MembershipRepository {
                 .single();
     }
 
+    //todo: use new syntax
     @Override
     public void update(MembershipEntity membership) {
 
+       int rowsAffected = jdbcClient.sql("""
+                update memberships set
+                 client_id = ?,
+                 type = CAST(? AS membership_type),
+                 start_date = ?,
+                 end_date = ?,
+                 price = ? 
+                 where id = ?;
+                """)
+               .param(membership.getClientId())
+               .param(membership.getType().name())
+               .param(membership.getStartDate())
+               .param(membership.getEndDate())
+               .param(membership.getPrice())
+               .param(membership.getId())
+               .update();
     }
 
     @Override
