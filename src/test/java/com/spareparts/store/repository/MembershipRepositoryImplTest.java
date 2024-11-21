@@ -117,4 +117,32 @@ class MembershipRepositoryImplTest {
                 .as("Updated membership should match the modified membership entity")
                 .isEqualTo(modifiedMembership);
     }
+
+    @Test
+    void shouldDeleteMembershipById() {
+        // Arrange: Insert a client and a membership
+        long clientGeneratedId = jdbcClient
+                .sql("insert into clients (email, name) values ('client1@gmail.com', 'bot1') returning id;")
+                .query(Long.class)
+                .single();
+
+        long membershipGeneratedId = jdbcClient.sql("""
+                    insert into memberships (client_id, type, start_date, end_date, price)
+                    values (:clientId, 'MONTHLY', '2024-11-20T08:00:00Z', '2024-12-20T08:00:00Z', 99.99)
+                    returning id;
+                    """)
+                .param("clientId", clientGeneratedId)
+                .query(Long.class)
+                .single();
+
+        Optional<MembershipEntity> membership = membershipRepository.findById(membershipGeneratedId);
+        Assertions.assertThat(membership).isPresent(); // Ensure it exists before deletion
+
+        // Act: Delete the membership
+        membershipRepository.delete(membershipGeneratedId);
+
+        // Assert: Verify that the membership no longer exists
+        membership = membershipRepository.findById(membershipGeneratedId);
+        Assertions.assertThat(membership).isEmpty(); // Ensure it is deleted
+    }
 }

@@ -62,5 +62,13 @@ public class MembershipRepositoryImpl implements MembershipRepository {
     @Override
     public void delete(Long id) {
 
+
+        int rowsAffected = jdbcClient.sql("delete from memberships where id = :membershipId;")
+                .param("membershipId", id)
+                .update();
+//todo: ok?
+        if (rowsAffected == 0) {
+            throw new IllegalArgumentException("No membership found with ID: " + id);
+        }
     }
 }
