@@ -40,6 +40,11 @@ dependencies {
 //	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	implementation("com.zaxxer:HikariCP:6.1.0")
 
+	implementation("org.mapstruct:mapstruct:1.6.3")
+
+	implementation ("org.springframework.security:spring-security-crypto")
+
+
 	testImplementation("org.junit.jupiter:junit-jupiter:5.7.1")
 	testImplementation("org.testcontainers:junit-jupiter:1.20.3")
 	testImplementation("org.testcontainers:postgresql:1.20.3")

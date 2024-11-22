@@ -1,35 +1,46 @@
 package com.spareparts.store.service;
 
-import com.spareparts.store.service.model.Client;
+import com.spareparts.store.mapper.ClientMapper;
 import com.spareparts.store.repository.ClientRepository;
+import com.spareparts.store.service.model.Client;
+import com.spareparts.store.service.util.PasswordUtil;
 
 import java.util.List;
+import java.util.Optional;
 
-public class ClientServiceImpl {
+public class ClientServiceImpl implements ClientService {
 
     private final ClientRepository clientRepository;
+    private final ClientMapper clientMapper;
 
-    public ClientServiceImpl(ClientRepository clientRepository) {
+    public ClientServiceImpl(ClientRepository clientRepository, ClientMapper clientMapper) {
+
         this.clientRepository = clientRepository;
+        this.clientMapper = clientMapper;
     }
 
+    @Override
+    public Optional<Client> registerClient(Client client) {
+
+
+        clientRepository.save(clientMapper.toClientEntity(client));
+
+
+        return null;
+    }
+
+    @Override
     public List<Client> getAllClients() {
-//        return clientRepository.findAll().stream()
-//                .map(ClientMapper::toDTO)
-//                .collect(Collectors.toList());
-        return  null;
+        return List.of();
     }
 
-    public Client getClientById(Long id) {
-//        return clientRepository.findById(id)
-//                .map(ClientMapper::toDTO)
-//                .orElseThrow(() -> new RuntimeException("Client not found with ID: " + id));
-        return null;
+    @Override
+    public Optional<Client> getClientById(Long clientId) {
+        return Optional.empty();
     }
 
-    public Client saveClient(Client clientDTO) {
-//        var savedEntity = clientRepository.save(ClientMapper.toEntity(clientDTO));
-//        return ClientMapper.toDTO(savedEntity);
-        return null;
+    @Override
+    public void deleteClient(Long clientId) {
+
     }
 }

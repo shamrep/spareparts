@@ -49,20 +49,20 @@ class NotificationEntityRepositoryImplTest {
     @Test
     void saveAndThenFindNotificationById() {
 
-        testJdbcTemplate.execute(
-                "insert into clients (email, name) values ('client1@gmail.com', 'bot1');" +
-                        "insert into clients (email, name) values ('client2@gmail.com', 'bot2');");
+        long clientGeneratedId = testJdbcTemplate
+                .queryForObject(
+                        """
+                                insert into clients (email, name, password) 
+                                values ('client1@gmail.com', 'bot1', '1234567890a') 
+                                returning id;)
+                            """, Long.class);
 
-        Optional<ClientEntity> client1 = testJdbcTemplate.
-                query("select * from clients where email = 'client1@gmail.com';",
-                        (rs, rowNum) -> new ClientEntity(
-                                rs.getLong("id"),
-                                rs.getString("email"),
-                                rs.getString("name"))).stream().findFirst();
+
+
 
         NotificationEntity notificationEntity1 = new NotificationEntity(
                 null,
-                client1.get().getId(),
+                clientGeneratedId,
                 "test message for client 1",
                 OffsetDateTime.now(ZoneOffset.UTC),
                 false);
@@ -74,7 +74,7 @@ class NotificationEntityRepositoryImplTest {
         assertTrue(foundNotification1.isPresent(), "Notification should be found by ID.");
 
         assertEquals(notification1Id, foundNotification1.get().getId(), "Notification IDs should match.");
-        assertEquals(client1.get().getId(), foundNotification1.get().getClientId(), "Client IDs should match.");
+        assertEquals(clientGeneratedId, foundNotification1.get().getClientId(), "Client IDs should match.");
         assertEquals("test message for client 1", foundNotification1.get().getMessage(), "Messages should match.");
         assertEquals(notificationEntity1.getSendDate(), foundNotification1.get().getSendDate(), "Dates should match.");
         assertFalse(foundNotification1.get().isRead(), "Value should be false.");
