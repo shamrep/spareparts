@@ -53,5 +53,13 @@ public class ClientRepositoryImpl implements ClientRepository {
 
     }
 
+    @Override
+    public boolean existsByEmail(String email) {
+        return jdbcClient
+                .sql("select count(*) > 0 from clients where email = :email")
+                .param("email", email)
+                .query(Boolean.class)
+                .single();
+    }
 }
 

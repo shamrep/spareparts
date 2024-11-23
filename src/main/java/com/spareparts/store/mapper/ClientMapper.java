@@ -3,9 +3,8 @@ package com.spareparts.store.mapper;
 import com.spareparts.store.controller.dto.ClientDTO;
 import com.spareparts.store.repository.entity.ClientEntity;
 import com.spareparts.store.service.model.Client;
-import org.mapstruct.Mapper;
 
-@Mapper
+
 public interface ClientMapper {
     // Map from ClientDTO (Controller) to Client (Service)
     Client toClient(ClientDTO clientDTO);

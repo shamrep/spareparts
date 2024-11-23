@@ -35,21 +35,19 @@ dependencies {
 
 	compileOnly("org.projectlombok:lombok")
 	annotationProcessor("org.projectlombok:lombok")
-
 	
 //	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	implementation("com.zaxxer:HikariCP:6.1.0")
 
-	implementation("org.mapstruct:mapstruct:1.6.3")
-
 	implementation ("org.springframework.security:spring-security-crypto")
+	implementation("io.jsonwebtoken:jjwt-api:0.12.6")
 
-
+	testImplementation("org.mockito:mockito-core:5.14.2")
+	testImplementation("org.mockito:mockito-junit-jupiter:5.14.2")
 	testImplementation("org.junit.jupiter:junit-jupiter:5.7.1")
 	testImplementation("org.testcontainers:junit-jupiter:1.20.3")
 	testImplementation("org.testcontainers:postgresql:1.20.3")
 	testImplementation("org.junit.platform:junit-platform-launcher")
-
 	testImplementation("org.assertj:assertj-core:3.26.3")
 }
 

@@ -8,8 +8,8 @@ import lombok.Getter;
 @Getter
 @EqualsAndHashCode
 public class Client {
-    private long id;
+    private Long id;
     private String email;
     private String name;
-    private String passwordHash;
+    private String password;
 }

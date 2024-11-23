@@ -11,4 +11,6 @@ public interface ClientRepository {
     long save(ClientEntity clientEntity);
     void update(ClientEntity clientEntity);
     void delete(Long id);
+
+    boolean existsByEmail(String email);
 }
