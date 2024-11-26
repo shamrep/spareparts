@@ -1,38 +1,31 @@
 package com.spareparts.store.service.util.validation;
 
-import java.lang.reflect.Field;
-import java.util.regex.Pattern;
+import com.spareparts.store.service.util.validation.rules.AllowedDomainsRule;
+import com.spareparts.store.service.util.validation.rules.BlankRule;
+import com.spareparts.store.service.util.validation.rules.EmailPatternRule;
+import com.spareparts.store.service.util.validation.rules.ValidationRule;
 
-public class EmailValidator {
+import java.util.ArrayList;
+import java.util.List;
 
-    private static final Pattern EMAIL_PATTERN = Pattern.compile(
-            "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$"
-    );
+public class EmailValidator implements Validator<String> {
 
-    public static void validate(Object object) throws ValidationException {
-        Class<?> clazz = object.getClass();
-        Field[] fields = clazz.getDeclaredFields();
+    private final List<ValidationRule<String>> rules = new ArrayList<>();
 
-        for (Field field : fields) {
-            if (field.isAnnotationPresent(ValidEmail.class)) {
-                field.setAccessible(true); // Access private fields
-                Object value = null;
+    public EmailValidator() {
+        rules.add(new EmailPatternRule());
+        rules.add(new BlankRule());
+        rules.add(new AllowedDomainsRule("Email cannot be blank."));
+    }
 
-                try {
-                    value = field.get(object);
-                } catch (IllegalAccessException e) {
-                    throw new RuntimeException(e);
-                }
+    @Override
+    public List<String> validate(String email) {
 
-                if (value instanceof String email) {
-                    if (!EMAIL_PATTERN.matcher(email).matches()) {
-                        ValidEmail annotation = field.getAnnotation(ValidEmail.class);
-                        throw new ValidationException(annotation.message());
-                    }
-                } else {
-                    throw new ValidationException("Field annotated with @ValidEmail is not of type String");
-                }
-            }
-        }
+        List<String> errors = rules.stream()
+                .filter(rule -> !rule.validate(email))
+                .map(ValidationRule::getMessage)
+                .toList();
+
+        return errors;
     }
 }

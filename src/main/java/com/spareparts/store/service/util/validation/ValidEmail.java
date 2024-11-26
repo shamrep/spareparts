@@ -8,5 +8,6 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD) // Specifies that this annotation can only be used on fields
 @Retention(RetentionPolicy.RUNTIME) // The annotation is retained at runtime
 public @interface ValidEmail {
+
     String message() default "Invalid email format"; // Error message
 }

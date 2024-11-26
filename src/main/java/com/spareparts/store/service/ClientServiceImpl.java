@@ -5,8 +5,7 @@ import com.spareparts.store.repository.ClientRepository;
 import com.spareparts.store.repository.entity.ClientEntity;
 import com.spareparts.store.service.model.Client;
 import com.spareparts.store.service.util.PasswordUtil;
-import com.spareparts.store.service.util.validation.EmailValidator;
-import com.spareparts.store.service.util.validation.ValidationException;
+import com.spareparts.store.service.util.validation.ValidationUtil;
 
 import java.util.List;
 import java.util.Optional;
@@ -27,8 +26,9 @@ public class ClientServiceImpl implements ClientService {
     @Override
     public Optional<Client> registerClient(Client client) {
 
+        ValidationUtil validationUtil = new ValidationUtil();
 
-            EmailValidator.validate(client);
+        boolean validate = validationUtil.validate(client);
 
         String hashedPassword = PasswordUtil.hashPassword(client.getPassword());
 
@@ -53,7 +53,7 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public Optional<Client> getClientById(Long clientId) {
-        Optional<ClientEntity> clientEntity =  clientRepository.findById(clientId);
+        Optional<ClientEntity> clientEntity = clientRepository.findById(clientId);
 //todo: read about it
         return clientEntity.map(clientMapper::toClient);
     }
