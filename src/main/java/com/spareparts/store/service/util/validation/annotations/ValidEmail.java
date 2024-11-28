@@ -1,4 +1,4 @@
-package com.spareparts.store.service.util.validation;
+package com.spareparts.store.service.util.validation.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

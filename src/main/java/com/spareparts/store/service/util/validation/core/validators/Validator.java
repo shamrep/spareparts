@@ -1,4 +1,4 @@
-package com.spareparts.store.service.util.validation;
+package com.spareparts.store.service.util.validation.core.validators;
 
 import java.util.List;
 

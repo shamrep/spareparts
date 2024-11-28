@@ -1,7 +1,10 @@
 package com.spareparts.store.service.util.validation.rules;
 
-public class ContainsSpecialCharacter implements ValidationRule<String> {
+public class ContainsSpecialCharacterRule extends BaseRule<String> {
     private static final String SPECIAL_CHARACTERS = "!@#$%^&*()-_+=<>?[]{}|,./";
+
+    public ContainsSpecialCharacterRule(String s) {
+    }
 
     @Override
     public boolean validate(String value) {

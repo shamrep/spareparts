@@ -29,17 +29,17 @@ public class ClientServiceImplTest {
     }
 
     @Test
-    void shouldRegisterClientSuccessfully() throws Exception {
+    void shouldRegisterClientSuccessfully() {
         // Arrange
         Client inputClient = new Client(null, "client1@gmail.com", "Client Name", "password123");
         Client hashedClient = new Client(null, "client1@gmail.com", "Client Name", "hashedPassword");
         ClientEntity clientEntity = new ClientEntity(1L, "client1@gmail.com", "Client Name", "hashedPassword");
 
-        when(clientRepository.existsByEmail(inputClient.getEmail())).thenReturn(false);
-        when(clientMapper.toClientEntity(hashedClient)).thenReturn(clientEntity);
-        when(clientRepository.save(clientEntity)).thenReturn(1L);
+        when(clientRepository.existsByEmail(anyString())).thenReturn(false);
+        when(clientMapper.toClientEntity(any(Client.class))).thenReturn(clientEntity);
+        when(clientRepository.save(any(ClientEntity.class))).thenReturn(1L);
         when(clientRepository.findById(1L)).thenReturn(Optional.of(clientEntity));
-        when(clientMapper.toClient(clientEntity)).thenReturn(hashedClient);
+        when(clientMapper.toClient(any(ClientEntity.class))).thenReturn(hashedClient);
 
         // Act
         Optional<Client> result = clientService.registerClient(inputClient);
@@ -62,10 +62,13 @@ public class ClientServiceImplTest {
 
         // Act & Assert
         assertThatThrownBy(() -> clientService.registerClient(duplicateClient))
+                .as("Should throw EmailAlreadyInUseException when email is already registered")
                 .isInstanceOf(EmailAlreadyInUseException.class)
                 .hasMessage("Email is already registered");
 
+        // Verify repository interactions
         verify(clientRepository).existsByEmail(duplicateClient.getEmail());
         verifyNoMoreInteractions(clientRepository);
     }
+
 }

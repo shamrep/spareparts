@@ -5,9 +5,10 @@ import com.spareparts.store.repository.ClientRepository;
 import com.spareparts.store.repository.entity.ClientEntity;
 import com.spareparts.store.service.model.Client;
 import com.spareparts.store.service.util.PasswordUtil;
-import com.spareparts.store.service.util.validation.ValidationUtil;
+import com.spareparts.store.service.util.validation.core.ValidationUtil;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public class ClientServiceImpl implements ClientService {
@@ -25,22 +26,23 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public Optional<Client> registerClient(Client client) {
-
-        ValidationUtil validationUtil = new ValidationUtil();
-
-        boolean validate = validationUtil.validate(client);
+        System.out.println("Registering client: " + client);
 
         String hashedPassword = PasswordUtil.hashPassword(client.getPassword());
+        System.out.println("Hashed password: " + hashedPassword);
 
         if (clientRepository.existsByEmail(client.getEmail())) {
-            throw new EmailAlreadyInUseException("Email is already registered");  // Custom exception
+            System.out.println("Email already exists: " + client.getEmail());
+            throw new EmailAlreadyInUseException("Email is already registered");
         }
 
         ClientEntity clientEntity = clientMapper.toClientEntity(
                 new Client(client.getId(), client.getEmail(), client.getName(), hashedPassword)
         );
+        System.out.println("Mapped to entity: " + clientEntity);
 
         long clientGeneratedId = clientRepository.save(clientEntity);
+        System.out.println("Generated client ID: " + clientGeneratedId);
 
         return clientRepository.findById(clientGeneratedId)
                 .map(clientMapper::toClient);

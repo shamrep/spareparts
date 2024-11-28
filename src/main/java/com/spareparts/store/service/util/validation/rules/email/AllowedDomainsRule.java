@@ -1,6 +1,9 @@
-package com.spareparts.store.service.util.validation.rules;
+package com.spareparts.store.service.util.validation.rules.email;
 
-public class AllowedDomainsRule implements ValidationRule<String> {
+import com.spareparts.store.service.util.validation.rules.BaseRule;
+import com.spareparts.store.service.util.validation.rules.ValidationRule;
+
+public class AllowedDomainsRule extends BaseRule<String> {
 
     private final String[] allowedDomains;
 
