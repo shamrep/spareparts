@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
+import java.util.Set;
+
 @AllArgsConstructor
 @Getter
 @EqualsAndHashCode
@@ -12,4 +14,6 @@ public class Client {
     private String email;
     private String name;
     private String password;
+
+    private Set<Role> roles;
 }
