@@ -1,13 +1,13 @@
 package com.spareparts.store.service.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-
+import java.time.OffsetDateTime;
 import java.util.Set;
 
-@Getter
-@AllArgsConstructor
 public class Role {
+
+    private Long id;
     private String name;
+    private OffsetDateTime creationDate;
+    private String createdBy;
     private Set<Permission> permissions;
 }
