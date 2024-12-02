@@ -1,25 +1,19 @@
 package com.spareparts.store.service.util.validation.rules.email;
 
-import com.spareparts.store.service.util.validation.rules.BaseRule;
 import com.spareparts.store.service.util.validation.rules.ValidationRule;
 import lombok.Getter;
 
 import java.util.regex.Pattern;
 
-public class EmailPatternRule extends BaseRule<String> {
-    @Getter
-    private String errorMessage = "Invalid email format.";
+public class EmailPatternRule implements ValidationRule<String> {
+
+    public EmailPatternRule(String message) {
+
+    }
+
     private static final Pattern EMAIL_PATTERN = Pattern.compile(
             "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$"
     );
-
-    public EmailPatternRule() {
-    }
-
-    public EmailPatternRule(String errorMessage) {
-
-        this.errorMessage = errorMessage;
-    }
 
     @Override
     public boolean validate(String email) {
@@ -27,7 +21,7 @@ public class EmailPatternRule extends BaseRule<String> {
     }
 
     @Override
-    public String getMessage() {
+    public String toString() {
         return "Invalid email format.";
     }
 }

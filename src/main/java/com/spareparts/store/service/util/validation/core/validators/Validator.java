@@ -1,10 +1,11 @@
 package com.spareparts.store.service.util.validation.core.validators;
 
 import java.util.List;
+import java.util.Map;
 
 public interface Validator<T> {
 
-    List<String> validate(T value);
+    Map<String, List<String>> validate(T value);
 
     default boolean isValid(T value) {
         return validate(value).isEmpty();

@@ -1,22 +1,19 @@
 package com.spareparts.store.service.util.validation.rules.email;
 
-import com.spareparts.store.service.util.validation.rules.BaseRule;
-import com.spareparts.store.service.util.validation.rules.ValidationRule;
+import com.spareparts.store.service.util.validation.rules.AbstractRule;
 
-public class AllowedDomainsRule extends BaseRule<String> {
+public class AllowedDomainsRule extends AbstractRule<String> {
 
-    private final String[] allowedDomains;
+    private static String[] allowedDomains = new String[]{"@gmail.com", "@outlook.com"};;
 
-
-    public AllowedDomainsRule(String... allowedDomains) {
-
-        this.allowedDomains = (allowedDomains != null && allowedDomains.length > 0)
-                ? allowedDomains
-                : new String[]{"@gmail.com", "@outlook.com"};
+    public AllowedDomainsRule() {
+        super("Invalid email domain. Allowed domains are: " + String.join(", ", allowedDomains));
     }
 
+    public AllowedDomainsRule(String s) {
+        super(s);
+    }
 
-    @Override
     public boolean validate(String email) {
 
         for (String domain : allowedDomains) {
@@ -30,9 +27,14 @@ public class AllowedDomainsRule extends BaseRule<String> {
         return false;
     }
 
-    @Override
-    public String getMessage() {
+    public void addAllowedDomains(String... allowedDomains) {
+        this.allowedDomains = (allowedDomains != null && allowedDomains.length > 0)
+                ? allowedDomains
+                : new String[]{"@gmail.com", "@outlook.com"};
+    }
 
+    @Override
+    public String toString() {
         return "Invalid email domain. Allowed domains are: " + String.join(", ", allowedDomains);
     }
 }

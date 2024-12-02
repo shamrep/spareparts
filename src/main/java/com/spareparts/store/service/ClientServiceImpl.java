@@ -5,10 +5,8 @@ import com.spareparts.store.repository.ClientRepository;
 import com.spareparts.store.repository.entity.ClientEntity;
 import com.spareparts.store.service.model.Client;
 import com.spareparts.store.service.util.PasswordUtil;
-import com.spareparts.store.service.util.validation.core.ValidationUtil;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 public class ClientServiceImpl implements ClientService {
