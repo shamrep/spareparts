@@ -1,7 +1,5 @@
 package com.spareparts.store.repository.jdbc;
 
-import com.spareparts.store.repository.entity.TrainerEntity;
-
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;

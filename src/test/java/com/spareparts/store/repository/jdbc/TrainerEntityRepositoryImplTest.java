@@ -1,6 +1,5 @@
 package com.spareparts.store.repository.jdbc;
 
-import com.spareparts.store.repository.entity.TrainerEntity;
 import com.spareparts.store.repository.util.DatabaseTestManager;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;

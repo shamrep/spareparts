@@ -1,7 +1,6 @@
 package com.spareparts.store.repository.entity;
 
 import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 import java.math.BigDecimal;
@@ -17,6 +16,9 @@ public class MembershipEntity {
     private long clientId;
     //todo: maybe enum?
     private MembershipType type; // e.g., Monthly, Annual
+    private OffsetDateTime startDate;
+    private OffsetDateTime endDate;
+    private BigDecimal price;
 
     public OffsetDateTime getStartDate() {
         return startDate.truncatedTo(ChronoUnit.MICROS);
@@ -25,10 +27,6 @@ public class MembershipEntity {
     public OffsetDateTime getEndDate() {
         return endDate.truncatedTo(ChronoUnit.MICROS);
     }
-
-    private OffsetDateTime startDate;
-    private OffsetDateTime endDate;
-    private BigDecimal price;
 
     @Override
     public boolean equals(Object o) {

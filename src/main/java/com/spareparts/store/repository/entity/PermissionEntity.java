@@ -1,27 +1,18 @@
 package com.spareparts.store.repository.entity;
 
 
-import jakarta.persistence.*;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
-@Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
-@Table(name = "permissions")
+@Getter
 public class PermissionEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Column(nullable = false, unique = true)
     private String name;
-
-    @Column(name = "creation_date", nullable = false, updatable = false)
-    private LocalDateTime creationDate;
+    private OffsetDateTime creationDate;
 }
