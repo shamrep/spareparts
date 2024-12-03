@@ -4,8 +4,10 @@ import com.spareparts.store.mapper.ClientMapper;
 import com.spareparts.store.repository.ClientRepository;
 import com.spareparts.store.repository.entity.ClientEntity;
 import com.spareparts.store.service.model.Client;
+import com.spareparts.store.service.model.Permission;
 import com.spareparts.store.service.util.PasswordUtil;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
@@ -35,7 +37,13 @@ public class ClientServiceImpl implements ClientService {
         }
 
         ClientEntity clientEntity = clientMapper.toClientEntity(
-                new Client(client.getId(), client.getEmail(), client.getName(), hashedPassword)
+
+                new Client(
+                        client.getId(),
+                        client.getEmail(),
+                        client.getName(),
+                        hashedPassword,
+                        new HashSet<Permission>().add(new Permission()))
         );
         System.out.println("Mapped to entity: " + clientEntity);
 
