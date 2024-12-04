@@ -18,7 +18,7 @@ public class ClientMapperImpl implements ClientMapper {
     @Override
     public Client toClient(ClientEntity clientEntity) {
 
-        return new Client(clientEntity.getId(), clientEntity.getEmail(), clientEntity.getName(), clientEntity.getPassword());
+        return new Client(clientEntity.getId(), clientEntity.getEmail(), clientEntity.getName(), clientEntity.getPassword(), null);
     }
 
     @Override

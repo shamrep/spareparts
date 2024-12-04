@@ -2,6 +2,7 @@ package com.spareparts.store;
 
 import com.spareparts.store.mapper.ClientMapper;
 import com.spareparts.store.repository.ClientRepository;
+import com.spareparts.store.repository.RoleRepository;
 import com.spareparts.store.repository.entity.ClientEntity;
 import com.spareparts.store.service.ClientService;
 import com.spareparts.store.service.ClientServiceImpl;
@@ -20,19 +21,21 @@ public class ClientServiceImplTest {
     private ClientService clientService;
     private ClientRepository clientRepository;
     private ClientMapper clientMapper;
+    private RoleRepository roleRepository;
 
     @BeforeEach
     void setup() {
         clientRepository = mock(ClientRepository.class);
         clientMapper = mock(ClientMapper.class);
-        clientService = new ClientServiceImpl(clientRepository, clientMapper);
+        roleRepository = mock(RoleRepository.class);
+        clientService = new ClientServiceImpl(clientRepository, clientMapper, roleRepository);
     }
 
     @Test
     void shouldRegisterClientSuccessfully() {
         // Arrange
-        Client inputClient = new Client(null, "client1@gmail.com", "Client Name", "password123");
-        Client hashedClient = new Client(null, "client1@gmail.com", "Client Name", "hashedPassword");
+        Client inputClient = new Client(null, "client1@gmail.com", "Client Name", "password123", null);
+        Client hashedClient = new Client(null, "client1@gmail.com", "Client Name", "hashedPassword", null);
         ClientEntity clientEntity = new ClientEntity(1L, "client1@gmail.com", "Client Name", "hashedPassword");
 
         when(clientRepository.existsByEmail(anyString())).thenReturn(false);
@@ -56,7 +59,7 @@ public class ClientServiceImplTest {
     @Test
     void shouldThrowEmailAlreadyInUseExceptionForDuplicateEmail() {
         // Arrange
-        Client duplicateClient = new Client(null, "duplicate@gmail.com", "Client Name", "password123");
+        Client duplicateClient = new Client(null, "duplicate@gmail.com", "Client Name", "password123", null);
 
         when(clientRepository.existsByEmail(duplicateClient.getEmail())).thenReturn(true);
 

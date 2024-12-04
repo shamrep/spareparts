@@ -2,27 +2,26 @@ package com.spareparts.store.service;
 
 import com.spareparts.store.mapper.ClientMapper;
 import com.spareparts.store.repository.ClientRepository;
+import com.spareparts.store.repository.RoleRepository;
 import com.spareparts.store.repository.entity.ClientEntity;
 import com.spareparts.store.service.model.Client;
 import com.spareparts.store.service.model.Permission;
+import com.spareparts.store.service.model.Role;
 import com.spareparts.store.service.util.PasswordUtil;
+import lombok.AllArgsConstructor;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
+@AllArgsConstructor
 public class ClientServiceImpl implements ClientService {
 
     private final ClientRepository clientRepository;
     private final ClientMapper clientMapper;
+    private final RoleRepository roleRepository;
 
-
-    public ClientServiceImpl(ClientRepository clientRepository, ClientMapper clientMapper) {
-
-        this.clientRepository = clientRepository;
-        this.clientMapper = clientMapper;
-
-    }
 
     @Override
     public Optional<Client> registerClient(Client client) {
@@ -36,6 +35,9 @@ public class ClientServiceImpl implements ClientService {
             throw new EmailAlreadyInUseException("Email is already registered");
         }
 
+        Set<Role> roles = new HashSet<>();
+
+
         ClientEntity clientEntity = clientMapper.toClientEntity(
 
                 new Client(
@@ -43,7 +45,8 @@ public class ClientServiceImpl implements ClientService {
                         client.getEmail(),
                         client.getName(),
                         hashedPassword,
-                        new HashSet<Permission>().add(new Permission()))
+null
+                        )
         );
         System.out.println("Mapped to entity: " + clientEntity);
 
