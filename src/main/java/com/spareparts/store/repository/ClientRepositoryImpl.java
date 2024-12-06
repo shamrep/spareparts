@@ -12,6 +12,10 @@ public class ClientRepositoryImpl implements ClientRepository {
 
     private JdbcClient jdbcClient;
 
+    public ClientRepositoryImpl() {
+        this.jdbcClient = JdbcClient.create(DataSourceManager.getDataSource());
+    }
+
     @Override
     public Optional<ClientEntity> findById(Long id) {
 

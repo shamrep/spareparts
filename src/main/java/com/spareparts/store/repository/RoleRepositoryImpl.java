@@ -13,6 +13,10 @@ public class RoleRepositoryImpl implements RoleRepository {
 
     private JdbcClient jdbcClient;
 
+    public RoleRepositoryImpl() {
+        this.jdbcClient = JdbcClient.create(DataSourceManager.getDataSource());
+    }
+
     @Override
     public Optional<RoleEntity> findById(long id) {
 

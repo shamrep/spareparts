@@ -1,10 +1,15 @@
 package com.spareparts.store.mapper;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.spareparts.store.controller.dto.ClientDTO;
 import com.spareparts.store.repository.entity.ClientEntity;
 import com.spareparts.store.service.model.Client;
 
 public class ClientMapperImpl implements ClientMapper {
+
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
     @Override
     public Client toClient(ClientDTO clientDTO) {
         return null;
@@ -23,6 +28,25 @@ public class ClientMapperImpl implements ClientMapper {
 
     @Override
     public ClientDTO toClientDTO(Client client) {
-        return null;
+
+        return new ClientDTO(client.getId(), client.getName(), client.getEmail());
+    }
+
+    @Override
+    public String toJson(ClientDTO clientDto) {
+        try {
+            return objectMapper.writeValueAsString(clientDto);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException("Error converting ClientDto to JSON", e);
+        }
+    }
+
+    @Override
+    public ClientDTO jsonToClientDTO(String clientJson) {
+        try {
+            return objectMapper.readValue(clientJson, ClientDTO.class);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException("Error converting JSON to ClientDto", e);
+        }
     }
 }

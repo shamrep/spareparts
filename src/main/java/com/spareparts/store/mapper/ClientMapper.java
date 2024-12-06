@@ -17,4 +17,8 @@ public interface ClientMapper {
 
     // Optional: Map from Client (Service) to ClientDTO (Controller) if you need to return to the controller
     ClientDTO toClientDTO(Client client);
+
+    String toJson(ClientDTO clientDto);
+
+    ClientDTO jsonToClientDTO(String clientJson);
 }

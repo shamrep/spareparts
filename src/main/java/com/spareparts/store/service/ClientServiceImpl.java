@@ -1,8 +1,11 @@
 package com.spareparts.store.service;
 
 import com.spareparts.store.mapper.ClientMapper;
+import com.spareparts.store.mapper.ClientMapperImpl;
 import com.spareparts.store.repository.ClientRepository;
+import com.spareparts.store.repository.ClientRepositoryImpl;
 import com.spareparts.store.repository.RoleRepository;
+import com.spareparts.store.repository.RoleRepositoryImpl;
 import com.spareparts.store.repository.entity.ClientEntity;
 import com.spareparts.store.service.model.Client;
 import com.spareparts.store.service.model.Permission;
@@ -18,10 +21,15 @@ import java.util.Set;
 @AllArgsConstructor
 public class ClientServiceImpl implements ClientService {
 
-    private final ClientRepository clientRepository;
+    private  ClientRepository clientRepository;
     private final ClientMapper clientMapper;
-    private final RoleRepository roleRepository;
+    private  RoleRepository roleRepository;
 
+    public ClientServiceImpl() {
+        this.clientMapper = new ClientMapperImpl();
+//        this.clientRepository = new ClientRepositoryImpl();
+//        this.roleRepository = new RoleRepositoryImpl();
+    }
 
     @Override
     public Optional<Client> registerClient(Client client) {
@@ -59,7 +67,8 @@ null
 
     @Override
     public List<Client> getAllClients() {
-        return List.of();
+        return List.of(new Client(1L, "test", "bot", "1234", null),
+                new Client(2L, "test", "bot", "1234", null));
     }
 
     @Override

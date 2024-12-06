@@ -14,12 +14,6 @@ java {
 	}
 }
 
-//configurations {
-//	compileOnly {
-//		extendsFrom(configurations.annotationProcessor.get())
-//	}
-//}
-
 repositories {
 	mavenCentral()
 }
@@ -41,6 +35,9 @@ dependencies {
 
 	implementation ("org.springframework.security:spring-security-crypto")
 	implementation("io.jsonwebtoken:jjwt-api:0.12.6")
+
+	implementation("com.fasterxml.jackson.core:jackson-core:2.18.2")
+
 
 	testImplementation("org.mockito:mockito-core:5.14.2")
 	testImplementation("org.mockito:mockito-junit-jupiter:5.14.2")
