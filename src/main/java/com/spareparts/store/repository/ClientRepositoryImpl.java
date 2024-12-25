@@ -65,5 +65,15 @@ public class ClientRepositoryImpl implements ClientRepository {
                 .query(Boolean.class)
                 .single();
     }
+
+    @Override
+    public Optional<ClientEntity> findByEmail(String email) {
+
+        return jdbcClient
+                .sql("select from clients where email = :email")
+                .param("email", email)
+                .query(ClientEntity.class)
+                .optional();
+    }
 }
 

@@ -1,22 +1,21 @@
 package com.spareparts.store.controller.actions;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.spareparts.store.controller.Request;
+import com.spareparts.store.controller.Response;
 import com.spareparts.store.controller.dto.ClientDTO;
 import com.spareparts.store.mapper.ClientMapper;
 import com.spareparts.store.mapper.ClientMapperImpl;
 import com.spareparts.store.service.ClientService;
 import com.spareparts.store.service.ClientServiceImpl;
-import com.spareparts.store.service.model.Client;
-import com.sun.net.httpserver.HttpExchange;
 
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 public class GetAllClientsHandler implements Handler {
 
-    private ClientService clientService;
-    private ClientMapper clientMapper;
+    private final ClientService clientService;
+    private final ClientMapper clientMapper;
 
     public GetAllClientsHandler() {
         this.clientService = new ClientServiceImpl();
@@ -24,28 +23,20 @@ public class GetAllClientsHandler implements Handler {
     }
 
     @Override
-    public HttpExchange handle(HttpExchange exchange) {
+    public void handle(Request request, Response response) {
 
-        List<Client> clients = clientService.getAllClients();
-
-        List<ClientDTO> clientDTOS = clients
+        List<ClientDTO> clientDTOS = clientService
+                .getAllClients()
                 .stream()
-                .map(client -> clientMapper.toClientDTO(client))
+                .map(clientMapper::toClientDTO)
                 .toList();
-
-
-
-
 
         try {
             String jsons = new ObjectMapper().writeValueAsString(clientDTOS);
-            exchange.sendResponseHeaders(200, jsons.getBytes(StandardCharsets.UTF_8).length);
-            exchange.getResponseBody().write(jsons.getBytes(StandardCharsets.UTF_8));
-
-        } catch (IOException e) {
+            response.writeJsonResponse(jsons);
+            response.setStatus(200);
+        } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
-        
-        return exchange;
     }
 }

@@ -13,4 +13,6 @@ public interface ClientRepository {
     void delete(Long id);
 
     boolean existsByEmail(String email);
+
+    Optional<ClientEntity> findByEmail(String email);
 }

@@ -26,6 +26,11 @@ dependencies {
 	implementation ("org.liquibase:liquibase-core")
 	runtimeOnly("org.postgresql:postgresql")
 
+//	implementation("org.eclipse.jetty:jetty-server:12.0.16")
+//	implementation("org.eclipse.jetty:jetty-servlet:11.0.24")
+	implementation("org.apache.tomcat.embed:tomcat-embed-core:11.0.2")
+	implementation("org.apache.tomcat.embed:tomcat-embed-jasper:11.0.2")
+
 
 	compileOnly("org.projectlombok:lombok")
 	annotationProcessor("org.projectlombok:lombok")
@@ -35,6 +40,11 @@ dependencies {
 
 	implementation ("org.springframework.security:spring-security-crypto")
 	implementation("io.jsonwebtoken:jjwt-api:0.12.6")
+	runtimeOnly("io.jsonwebtoken:jjwt-impl:0.12.6")
+	runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.12.6")
+
+	compileOnly("jakarta.servlet:jakarta.servlet-api:6.1.0")
+
 
 	implementation("com.fasterxml.jackson.core:jackson-core:2.18.2")
 

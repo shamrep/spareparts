@@ -10,4 +10,8 @@ public interface ClientService {
     List<Client> getAllClients();
     Optional<Client> getClientById(Long clientId);
     void deleteClient(Long clientId);
+
+    Optional<Client> validateCredentials(String email, String password);
+
+    Optional<Client> findClientByEmail(String email);
 }

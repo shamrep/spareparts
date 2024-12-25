@@ -82,4 +82,20 @@ null
     public void deleteClient(Long clientId) {
 
     }
+
+    @Override
+    public Optional<Client> validateCredentials(String email, String password) {
+        Optional<Client> client = findClientByEmail(email);
+
+        if(client.isPresent()) {
+
+        }
+
+        return Optional.empty();
+    }
+
+    @Override
+    public Optional<Client> findClientByEmail(String email) {
+        return clientRepository.findByEmail(email).map(clientMapper::toClient);
+    }
 }
