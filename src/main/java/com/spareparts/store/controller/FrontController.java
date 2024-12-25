@@ -16,4 +16,19 @@ public class FrontController extends HttpServlet {
 
         dispatcher.dispatch(new Request(req), new Response(resp));
     }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        dispatcher.dispatch(new Request(req), new Response(resp));
+    }
+
+    @Override
+    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        dispatcher.dispatch(new Request(req), new Response(resp));
+    }
+
+    @Override
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        dispatcher.dispatch(new Request(req), new Response(resp));
+    }
 }

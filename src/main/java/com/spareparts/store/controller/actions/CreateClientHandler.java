@@ -1,34 +1,63 @@
 package com.spareparts.store.controller.actions;
 
-import com.sun.net.httpserver.HttpExchange;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.spareparts.store.controller.Request;
+import com.spareparts.store.controller.Response;
+import com.spareparts.store.service.ClientService;
+import com.spareparts.store.service.ClientServiceImpl;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.AllArgsConstructor;
 
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 
 public class CreateClientHandler implements Handler {
+    private final ClientService clientService;
 
+    public CreateClientHandler() {
+        this.clientService = new ClientServiceImpl();
+    }
 
     @Override
-    public HttpExchange handle(HttpExchange exchange) {
-        // Read request body
-        String requestBody = null;
+    public void handle(Request request, Response response) {
+
+        BufferedReader reader = request.getReader();
+        UserCredentials credentials = null;
+        ObjectMapper objectMapper = new ObjectMapper();
+
         try {
-            requestBody = new String(exchange.getRequestBody().readAllBytes(), StandardCharsets.UTF_8);
+            credentials = objectMapper.readValue(reader, UserCredentials.class);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
-        // Process request (e.g., save to database, etc.)
-        System.out.println("Received client data: " + requestBody);
+        if (clientService.findClientByEmail(credentials.email).isPresent()) {
+            response.setStatus(HttpServletResponse.SC_CONFLICT);
 
-        String response = "Client created successfully!";
-        try {
-            exchange.sendResponseHeaders(201, response.length());
-            exchange.getResponseBody().write(response.getBytes());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+            try {
+                response.writeJsonResponse(objectMapper.writeValueAsString(
+                        new ErrorResponse(
+                                HttpServletResponse.SC_CONFLICT,
+                                "Email already registered",
+                                credentials.email)));
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
+            }
         }
+    }
 
-        return exchange;
+    @AllArgsConstructor
+    private static class UserCredentials {
+        private String username;
+        private String email;
+        private String password;
+    }
+
+    @AllArgsConstructor
+    private static class ErrorResponse {
+        private int code;
+        private String error;
+        private String email;
     }
 }
