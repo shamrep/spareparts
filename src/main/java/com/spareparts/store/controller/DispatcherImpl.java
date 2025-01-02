@@ -1,9 +1,6 @@
 package com.spareparts.store.controller;
 
-import com.spareparts.store.controller.actions.CreateClientHandler;
-import com.spareparts.store.controller.actions.GetAllClientsHandler;
-import com.spareparts.store.controller.actions.Handler;
-import com.spareparts.store.controller.actions.NoActionHandler;
+import com.spareparts.store.controller.actions.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -16,6 +13,7 @@ public class DispatcherImpl implements Dispatcher {
 
         handlers.put(new Route("/clients", "GET"), new GetAllClientsHandler());
         handlers.put(new Route("/client", "POST"), new CreateClientHandler());
+        handlers.put(new Route("/client/login", "POST"), new LoginHandler());
     }
 
     @Override

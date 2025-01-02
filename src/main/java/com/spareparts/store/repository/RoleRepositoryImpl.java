@@ -2,11 +2,13 @@ package com.spareparts.store.repository;
 
 import com.spareparts.store.repository.entity.PermissionEntity;
 import com.spareparts.store.repository.entity.RoleEntity;
+import com.spareparts.store.service.model.Permission;
 import lombok.AllArgsConstructor;
 import org.springframework.jdbc.core.simple.JdbcClient;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @AllArgsConstructor
 public class RoleRepositoryImpl implements RoleRepository {
@@ -65,7 +67,7 @@ public class RoleRepositoryImpl implements RoleRepository {
                 select 
                     permissions.id, 
                     name, 
-                    permissions.creation_date 
+                    permissions.created_at 
                 from 
                     permissions join role_permissions on permission.id = role_permissions.permission_id 
                 where role_id = :roleId
@@ -73,5 +75,14 @@ public class RoleRepositoryImpl implements RoleRepository {
                 .param("roleId", roleId)
                 .query(PermissionEntity.class)
                 .list();
+    }
+
+    public Set<Permission> getRolePermissions(String roleName) {
+        jdbcClient.sql("""
+                select * from permissions join roles on permissions.role_id = role.id
+                from 
+                    permissions join role_permissions on permission.id = role_permissions.permission_id 
+                where role_id = :roleId
+                """)
     }
 }

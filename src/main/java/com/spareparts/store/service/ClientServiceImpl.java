@@ -2,10 +2,9 @@ package com.spareparts.store.service;
 
 import com.spareparts.store.mapper.ClientMapper;
 import com.spareparts.store.mapper.ClientMapperImpl;
+import com.spareparts.store.mapper.RoleMapper;
 import com.spareparts.store.repository.ClientRepository;
-import com.spareparts.store.repository.ClientRepositoryImpl;
 import com.spareparts.store.repository.RoleRepository;
-import com.spareparts.store.repository.RoleRepositoryImpl;
 import com.spareparts.store.repository.entity.ClientEntity;
 import com.spareparts.store.service.model.Client;
 import com.spareparts.store.service.model.Permission;
@@ -21,15 +20,17 @@ import java.util.Set;
 @AllArgsConstructor
 public class ClientServiceImpl implements ClientService {
 
-    private  ClientRepository clientRepository;
     private final ClientMapper clientMapper;
-    private  RoleRepository roleRepository;
+    private ClientRepository clientRepository;
+    private RoleRepository roleRepository;
+    private RoleMapper roleMapper;
 
     public ClientServiceImpl() {
         this.clientMapper = new ClientMapperImpl();
 //        this.clientRepository = new ClientRepositoryImpl();
 //        this.roleRepository = new RoleRepositoryImpl();
     }
+
 
     @Override
     public Optional<Client> registerClient(Client client) {
@@ -44,6 +45,7 @@ public class ClientServiceImpl implements ClientService {
         }
 
         Set<Role> roles = new HashSet<>();
+        roles.add(roleMapper.toEntity(roleRepository.findByName("client").get()));
 
 
         ClientEntity clientEntity = clientMapper.toClientEntity(
@@ -53,8 +55,8 @@ public class ClientServiceImpl implements ClientService {
                         client.getEmail(),
                         client.getName(),
                         hashedPassword,
-null
-                        )
+                        null
+                )
         );
         System.out.println("Mapped to entity: " + clientEntity);
 
@@ -83,19 +85,29 @@ null
 
     }
 
+
+    public void deleteClient(Long clientId, Client authorizedClient) {
+        if(hasPermission(authorizedClient, "deleteClient")) {
+            clientRepository.delete(clientId);
+        }
+    }
+
     @Override
     public Optional<Client> validateCredentials(String email, String password) {
         Optional<Client> client = findClientByEmail(email);
+        String hashPassword = PasswordUtil.hashPassword(password);
 
-        if(client.isPresent()) {
-
-        }
-
-        return Optional.empty();
+        return client.filter(c -> c.getPassword().equals(hashPassword));
     }
 
     @Override
     public Optional<Client> findClientByEmail(String email) {
         return clientRepository.findByEmail(email).map(clientMapper::toClient);
+    }
+
+    private boolean hasPermission(Client client, String requiredPermission) {
+        return client.getRoles().stream()
+                .flatMap(role -> role.getPermissions().stream())
+                .anyMatch(permission -> permission.getName().equals(requiredPermission));
     }
 }

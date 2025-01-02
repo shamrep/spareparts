@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 
 @AllArgsConstructor
 public class Request {
@@ -21,9 +22,9 @@ public class Request {
         return baseRequest.getPathInfo();
     }
 
-    public BufferedReader getReader() {
+    public BufferedReader getReader() throws IOException {
 
-        return null;
+        return baseRequest.getReader();
     }
 
     public String getMethod() {
@@ -34,5 +35,20 @@ public class Request {
     public Object getRequestURI() {
 
         return baseRequest.getRequestURI();
+    }
+
+    public String getBody() {
+        StringBuilder requestBody = new StringBuilder();
+        String line;
+
+        try (BufferedReader reader = baseRequest.getReader()) {
+            while ((line = reader.readLine()) != null) {
+                requestBody.append(line);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        return requestBody.toString();
     }
 }

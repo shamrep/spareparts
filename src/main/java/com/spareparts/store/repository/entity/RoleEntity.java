@@ -17,7 +17,6 @@ public class RoleEntity {
     private OffsetDateTime createdAt;
 //    private Long creatorId;
 
-
     public OffsetDateTime getCreatedAt() {
         return createdAt.truncatedTo(ChronoUnit.MICROS);
     }

@@ -13,7 +13,6 @@ public class FrontController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
-
         dispatcher.dispatch(new Request(req), new Response(resp));
     }
 

@@ -28,7 +28,7 @@ public class ClientServiceImplTest {
         clientRepository = mock(ClientRepository.class);
         clientMapper = mock(ClientMapper.class);
         roleRepository = mock(RoleRepository.class);
-        clientService = new ClientServiceImpl(clientRepository, clientMapper, roleRepository);
+        clientService = new ClientServiceImpl(clientMapper, clientRepository, roleRepository);
     }
 
     @Test

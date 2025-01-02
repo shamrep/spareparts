@@ -10,6 +10,7 @@ import java.util.Set;
 @Getter
 @EqualsAndHashCode
 public class Client {
+
     private Long id;
     private String email;
     private String name;

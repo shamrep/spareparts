@@ -1,41 +1,45 @@
 package com.spareparts.store.service;
 
-import com.spareparts.store.service.model.Client;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 
+import javax.crypto.SecretKey;
 import java.util.Date;
+import java.util.Map;
 
 public class JwtUtils {
-    private static final String SECRET_KEY = "your_secret_key";
-    private static final long EXPIRATION_TIME = 86400000; // 1 day in ms
+    // Replace this with your secure secret key
+    private static final SecretKey SECRET_KEY = Jwts.SIG.HS256.key().build();
 
-    public static String generateToken(Client client) {
+    // Token expiration time (e.g., 1 hour)
+    private static final long EXPIRATION_TIME_MS = 3600_000;
+
+    /**
+     * Generate a JWT.
+     *
+     * @param claims Map of claims to include in the token.
+     * @return Generated JWT as a String.
+     */
+    public static String generateToken(Map<String, Object> claims) {
         return Jwts.builder()
-                .setSubject(client.getEmail())
-                .claim("role", client.getRoles())
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
-                .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
-                .compact();
+                .claims(claims)
+                .issuedAt(new Date())
+                .expiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME_MS))
+                .signWith(SECRET_KEY).compact();
     }
 
-    public static boolean validateToken(String token) {
-        try {
-          //  Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token);
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
-    public static String getUsernameFromToken(String token) {
-//        return Jwts.parser()
-//                .setSigningKey(SECRET_KEY)
-//                .parseClaimsJws(token)
-//                .getBody()
-//                .getSubject();
-
-        return  null;
+    /**
+     * Validate a JWT and return claims.
+     *
+     * @param token JWT token to validate.
+     * @return Claims from the token if valid.
+     * @throws JwtException if the token is invalid or expired.
+     */
+    public static Claims validateToken(String token) {
+        return Jwts.parserBuilder()
+                .setSigningKey(SECRET_KEY) // Provide the secret key used for signing
+                .build()
+                .parseClaimsJws(token) // Validate the token
+                .getBody(); // Extract claims
     }
 }

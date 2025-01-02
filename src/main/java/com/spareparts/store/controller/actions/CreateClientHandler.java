@@ -6,11 +6,16 @@ import com.spareparts.store.controller.Request;
 import com.spareparts.store.controller.Response;
 import com.spareparts.store.service.ClientService;
 import com.spareparts.store.service.ClientServiceImpl;
+import com.spareparts.store.service.model.Client;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.util.HashSet;
 
 public class CreateClientHandler implements Handler {
     private final ClientService clientService;
@@ -22,7 +27,13 @@ public class CreateClientHandler implements Handler {
     @Override
     public void handle(Request request, Response response) {
 
-        BufferedReader reader = request.getReader();
+        BufferedReader reader = null;
+        try {
+            reader = request.getReader();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
         UserCredentials credentials = null;
         ObjectMapper objectMapper = new ObjectMapper();
 
@@ -33,10 +44,11 @@ public class CreateClientHandler implements Handler {
         }
 
         if (clientService.findClientByEmail(credentials.email).isPresent()) {
+
             response.setStatus(HttpServletResponse.SC_CONFLICT);
 
             try {
-                response.writeJsonResponse(objectMapper.writeValueAsString(
+                response.body(objectMapper.writeValueAsString(
                         new ErrorResponse(
                                 HttpServletResponse.SC_CONFLICT,
                                 "Email already registered",
@@ -45,11 +57,18 @@ public class CreateClientHandler implements Handler {
                 throw new RuntimeException(e);
             }
         }
+
+        Client client = new Client(null, credentials.email, credentials.name, credentials.password, new HashSet<>());
+
+        clientService.registerClient(client);
     }
 
+    @NoArgsConstructor
     @AllArgsConstructor
+    @Getter
+    @Setter
     private static class UserCredentials {
-        private String username;
+        private String name;
         private String email;
         private String password;
     }

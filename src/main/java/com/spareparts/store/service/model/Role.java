@@ -12,7 +12,7 @@ public class Role {
 
     private Long id;
     private String name;
-    private OffsetDateTime creationDate;
-    private long createdByClientWithId;
+    private OffsetDateTime creationAt;
+//    private long createdByClientWithId;
     private Set<Permission> permissions;
 }

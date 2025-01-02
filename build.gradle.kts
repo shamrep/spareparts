@@ -41,13 +41,13 @@ dependencies {
 	implementation ("org.springframework.security:spring-security-crypto")
 	implementation("io.jsonwebtoken:jjwt-api:0.12.6")
 	runtimeOnly("io.jsonwebtoken:jjwt-impl:0.12.6")
-	runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.12.6")
 
 	compileOnly("jakarta.servlet:jakarta.servlet-api:6.1.0")
 
 
 	implementation("com.fasterxml.jackson.core:jackson-core:2.18.2")
 
+//	implementation("com.auth0:java-jwt:4.4.0")
 
 	testImplementation("org.mockito:mockito-core:5.14.2")
 	testImplementation("org.mockito:mockito-junit-jupiter:5.14.2")

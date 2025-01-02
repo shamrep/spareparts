@@ -8,9 +8,6 @@ public class NoActionHandler implements Handler {
     @Override
     public void handle(Request request, Response response) {
 
-        response.setContentType("application/json");
-        response.setStatus(404);
-
         String jsonResponse = """
                 {
                     "timestamp": "%s",
@@ -24,6 +21,7 @@ public class NoActionHandler implements Handler {
                 request.getRequestURI()
         );
 
-        response.writeJsonResponse(jsonResponse);
+        response.setStatus(404);
+        response.body(jsonResponse);
     }
 }
