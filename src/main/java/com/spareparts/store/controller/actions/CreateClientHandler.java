@@ -3,10 +3,10 @@ package com.spareparts.store.controller.actions;
 import com.spareparts.store.controller.Request;
 import com.spareparts.store.controller.Response;
 import com.spareparts.store.mapper.ClientMapperImpl;
-import com.spareparts.store.mapper.Mapper;
+import com.spareparts.store.mapper.JsonMapper;
+import com.spareparts.store.mapper.MapperException;
 import com.spareparts.store.service.ClientAuthorizationService;
 import com.spareparts.store.service.ClientServiceImpl;
-import com.spareparts.store.service.MapperException;
 import com.spareparts.store.service.model.Client;
 import com.spareparts.store.service.model.ClientCredentials;
 import com.spareparts.store.service.util.validation.exceptions.ValidationException;
@@ -32,7 +32,7 @@ public class CreateClientHandler implements Handler {
 
         try {
 
-            ClientCredentials credentials = Mapper.readValue(request.getReader(), ClientCredentials.class);
+            ClientCredentials credentials = JsonMapper.fromJson(request.getBody(), ClientCredentials.class);
             Client client = clientMapper.toClient(credentials);
 
             Optional<Client> registeredClient = clientService.registerClient(client);
@@ -65,14 +65,6 @@ public class CreateClientHandler implements Handler {
                     .setStatusCode(Response.SC_BAD_REQUEST)
                     .message(e.getMessage())
 //                    .details()
-                    .build();
-
-        } catch (Exception e) {
-
-            response
-                    .error("Unexpected Error")
-                    .setStatusCode(Response.SC_INTERNAL_SERVER_ERROR)
-                    .message("An unexpected error occurred.")
                     .build();
         }
 

@@ -12,11 +12,12 @@ import java.util.Map;
 public class ClientAuthorizationService {
 
     private OffsetDateTime expirationDate;
+    private long expirationTime = 3600;
 
     public String generateToken(Client client) {
 
         Map<String, Object> claims = new HashMap<>();
-        expirationDate = OffsetDateTime.now();
+        expirationDate = OffsetDateTime.now().plusHours(24);
 
         claims.put("email", client.getEmail());
         claims.put("expiresIn", expirationDate);
@@ -26,18 +27,18 @@ public class ClientAuthorizationService {
     }
 
     public boolean validateToken(String token) {
-//
+
         return true;
     }
 
-    public String getToken(Reader reader)
-    {
-        return null;
-    }
 
     public OffsetDateTime getExpirationDate() {
+
         return expirationDate;
     }
 
 
+//    public long getExpirationTime() {
+//        return expirationDate.getLong()
+//    }
 }

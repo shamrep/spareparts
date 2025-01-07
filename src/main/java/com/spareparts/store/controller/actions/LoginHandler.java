@@ -1,71 +1,125 @@
 package com.spareparts.store.controller.actions;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.spareparts.store.controller.HandleError;
 import com.spareparts.store.controller.Request;
 import com.spareparts.store.controller.Response;
+import com.spareparts.store.mapper.JsonMapper;
+import com.spareparts.store.mapper.MapperException;
+import com.spareparts.store.service.ClientAuthorizationService;
 import com.spareparts.store.service.ClientService;
 import com.spareparts.store.service.ClientServiceImpl;
+import com.spareparts.store.service.model.Client;
+import com.spareparts.store.service.model.Role;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.time.OffsetDateTime;
+import java.util.Optional;
+import java.util.Set;
 
 public class LoginHandler implements Handler {
 
     private final ClientService clientService;
+    private final ClientAuthorizationService clientAuthorizationService;
 
     public LoginHandler() {
+
         this.clientService = new ClientServiceImpl();
+        this.clientAuthorizationService = new ClientAuthorizationService();
+
     }
 
     @Override
     public void handle(Request request, Response response) {
-        ObjectMapper objectMapper = new ObjectMapper();
 
-//        Map<String, Object> jsonMap = objectMapper.readValue(request.getBody(), Map.class);
+        String body = request.getBody();
+        CredentialsDTO credentialsDto = null;
 
+        try {
 
+            credentialsDto = JsonMapper.fromJson(body, CredentialsDTO.class);
 
+        } catch (MapperException e) {
 
+            response
+                    .setStatusCode(Response.SC_BAD_REQUEST)
+                    .error("Bad Request")
+                    .message("Invalid request body")
+                    .details(e.getMessage())
+                    .build();
 
+            return;
 
-        Map<String, Object> claims = new HashMap<>();
-//        claims.put("email", email);
+        }
 
+        Optional<Client> optionalClient
+                = clientService.validateCredentials(credentialsDto.getEmail(), credentialsDto.getPassword());
 
-//        Optional<Client> client = clientService.validateCredentials(email, password);
+        if (optionalClient.isPresent()) {
 
-//        if (client.isPresent()) {
-//            String token = JwtUtils.generateToken(claims);
-//            String json = Mapper.toJson(new LoginResponse(email, token));
-//
-//            response
-//                    .setStatus(Response.SC_OK)
-//                    .setContentType("application/json")
-//                    .jsonBody(json);
-//        } else {
-//            //todo put in
-//            Map<String, Object> errorResponse = new HashMap<>();
-//            errorResponse.put("timestamp", Instant.now().toString());
-////            errorResponse.put("status", HttpStatus.UNAUTHORIZED.value());
-//            errorResponse.put("error", "Unauthorized");
-//            errorResponse.put("message", "Invalid username or password.");
-//            errorResponse.put("path", "/api/auth/login");
-//
-//            response.setContentType("application/json")
-//                    .setStatus(Response.SC_NOT_AUTHORIZED)
-//                    .jsonBody(Mapper.toJson(errorResponse));
-//        }
+            String token = clientAuthorizationService.generateToken(optionalClient.get());
+            OffsetDateTime expirationDate = clientAuthorizationService.getExpirationDate();
+
+            LoginResponse loginResponse = new LoginResponse(
+                    token,
+                    expirationDate,
+                    new LoginResponse.UserDetails(
+                            optionalClient.get().getId(),
+                            optionalClient.get().getEmail(),
+                            optionalClient.get().getName(),
+                            optionalClient.get().getRoles()));
+
+            try {
+
+                response
+                        .setStatusCode(Response.SC_OK)
+                        .setHeader("Authorization", String.format("Bearer %s", token))
+                        .body(JsonMapper.toJson(loginResponse))
+                        .build();
+
+            } catch (MapperException e) {
+
+                throw new HandleError(e);
+
+            }
+
+        } else {
+
+            response
+                    .setStatusCode(Response.SC_NOT_AUTHORIZED)
+                    .error("Unauthorized")
+                    .message("Invalid email or password")
+                    .build();
+
+        }
     }
 
     @Getter
+    @AllArgsConstructor
     private static class LoginResponse {
-        private String email;
-        private String token;
 
-        public LoginResponse(String email, String token) {
-            this.email = email;
-            this.token = token;
+        private String token;
+        private OffsetDateTime expirationDate;
+        private UserDetails user;
+
+        @Getter
+        @AllArgsConstructor
+        public static class UserDetails {
+
+            private long id;
+            private String email;
+            private String name;
+            private Set<Role> roles;
+
         }
+    }
+
+    @AllArgsConstructor
+    @Getter
+    private static class CredentialsDTO {
+
+        private String email;
+        private String password;
+
     }
 }

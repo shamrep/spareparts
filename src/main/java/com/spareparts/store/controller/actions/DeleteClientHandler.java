@@ -18,7 +18,7 @@ public class DeleteClientHandler implements Handler {
     @Override
     public void handle(Request request, Response response) {
 
-        //can I store permissions in caching
+        //can I store permissions in cache
 
         long toDeleteClientId = 0;
 

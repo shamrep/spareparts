@@ -25,12 +25,20 @@ public class DispatcherImpl implements Dispatcher {
         Route route = new Route(pathTemplate, Route.RequestMethods.valueOf(request.getMethod()));
         Handler handler = handlers.get(route);
 
-        if (handler != null) {
-            handler.handle(request, response);
-        } else {
-            new NoActionHandler().handle(request, response);
+        try {
+
+            if (handler != null) {
+
+                handler.handle(request, response);
+
+            } else {
+
+                new NoActionHandler().handle(request, response);
+
+            }
+        } catch (Exception e) {
+
+            new InternalErrorHandler().handle(request, response);
         }
     }
-
-
 }
