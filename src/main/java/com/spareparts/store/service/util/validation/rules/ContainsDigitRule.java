@@ -1,6 +1,13 @@
 package com.spareparts.store.service.util.validation.rules;
 
-public class ContainsDigitRule implements ValidationRule<String> {
+public class ContainsDigitRule extends AbstractRule<String> implements ValidationRule<String> {
+    public ContainsDigitRule() {
+        super("Should contain at least one digit.");
+    }
+
+    public ContainsDigitRule(String s) {
+        super(s);
+    }
 
     @Override
     public boolean validate(String value) {

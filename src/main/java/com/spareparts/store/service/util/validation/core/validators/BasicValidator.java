@@ -4,7 +4,9 @@ import com.spareparts.store.service.util.validation.annotations.ValidEmail;
 import com.spareparts.store.service.util.validation.annotations.ValidPassword;
 import com.spareparts.store.service.util.validation.rules.AbstractRule;
 import com.spareparts.store.service.util.validation.rules.BlankRule;
+import com.spareparts.store.service.util.validation.rules.ContainsDigitRule;
 import com.spareparts.store.service.util.validation.rules.email.AllowedDomainsRule;
+import com.spareparts.store.service.util.validation.rules.email.EmailPatternRule;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -17,10 +19,13 @@ public class BasicValidator implements Validator<Object> {
     public BasicValidator() {
         // Map annotations to their validation rules
         annotationRulesMap.put(ValidEmail.class, List.of(
-                new AllowedDomainsRule("Email must be from an allowed domain.")
+                new AllowedDomainsRule("Email must be from an allowed domain."),
+                new EmailPatternRule("Not correct email.")
         ));
+
         annotationRulesMap.put(ValidPassword.class, List.of(
-                new BlankRule("Password cannot be null or blank.")
+                new BlankRule("Password cannot be null or blank."),
+                new ContainsDigitRule("Password should contain digits.")
         ));
     }
 

@@ -33,8 +33,7 @@ public class GetAllClientsHandler implements Handler {
 
         try {
             String jsons = new ObjectMapper().writeValueAsString(clientDTOS);
-            response.body(jsons);
-            response.setStatus(200);
+            response.setStatusCode(200).body(jsons).build();
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }

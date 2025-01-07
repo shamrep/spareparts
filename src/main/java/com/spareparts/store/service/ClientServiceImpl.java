@@ -4,12 +4,14 @@ import com.spareparts.store.mapper.ClientMapper;
 import com.spareparts.store.mapper.ClientMapperImpl;
 import com.spareparts.store.mapper.RoleMapper;
 import com.spareparts.store.repository.ClientRepository;
+import com.spareparts.store.repository.ClientRepositoryImpl;
 import com.spareparts.store.repository.RoleRepository;
 import com.spareparts.store.repository.entity.ClientEntity;
 import com.spareparts.store.service.model.Client;
 import com.spareparts.store.service.model.Permission;
 import com.spareparts.store.service.model.Role;
 import com.spareparts.store.service.util.PasswordUtil;
+import com.spareparts.store.service.util.validation.core.validators.BasicValidator;
 import lombok.AllArgsConstructor;
 
 import java.util.HashSet;
@@ -24,10 +26,11 @@ public class ClientServiceImpl implements ClientService {
     private ClientRepository clientRepository;
     private RoleRepository roleRepository;
     private RoleMapper roleMapper;
+    private ClientAuthorizationService clientAuthorizationService;
 
     public ClientServiceImpl() {
         this.clientMapper = new ClientMapperImpl();
-//        this.clientRepository = new ClientRepositoryImpl();
+        this.clientRepository = new ClientRepositoryImpl();
 //        this.roleRepository = new RoleRepositoryImpl();
     }
 
@@ -45,8 +48,7 @@ public class ClientServiceImpl implements ClientService {
         }
 
         Set<Role> roles = new HashSet<>();
-        roles.add(roleMapper.toEntity(roleRepository.findByName("client").get()));
-
+        roles.add(roleMapper.toRole(roleRepository.findByName("client").get()));
 
         ClientEntity clientEntity = clientMapper.toClientEntity(
 
@@ -55,7 +57,7 @@ public class ClientServiceImpl implements ClientService {
                         client.getEmail(),
                         client.getName(),
                         hashedPassword,
-                        null
+                        roles
                 )
         );
         System.out.println("Mapped to entity: " + clientEntity);

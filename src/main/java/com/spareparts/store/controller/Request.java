@@ -22,9 +22,13 @@ public class Request {
         return baseRequest.getPathInfo();
     }
 
-    public BufferedReader getReader() throws IOException {
+    public BufferedReader getReader() {
 
-        return baseRequest.getReader();
+        try {
+            return baseRequest.getReader();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public String getMethod() {

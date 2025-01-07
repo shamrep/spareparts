@@ -1,13 +1,14 @@
 package com.spareparts.store.controller;
 
+import com.spareparts.store.mapper.Mapper;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 
 
-@AllArgsConstructor
 public class Response {
     public static int SC_CONTINUE = 100;
 
@@ -33,23 +34,73 @@ public class Response {
 
     public static int SC_NOT_AUTHORIZED = 401;
 
+    public static int SC_CONFLICT = 409;
+
+    public static int SC_BAD_REQUEST = 400;
+
+    public static int SC_INTERNAL_SERVER_ERROR = 111;
+
     private final HttpServletResponse baseResponse;
 
-    public Response setStatus(int sc) {
+    Map<String, String> details = new HashMap<>();
+
+    private int statusCode;
+
+    public Response(HttpServletResponse baseResponse) {
+        this.baseResponse = baseResponse;
+    }
+
+    public Response setStatusCode(int sc) {
 
         baseResponse.setStatus(sc);
+        statusCode = sc;
+
         return this;
     }
 
     public Response setContentType(String type) {
 
         baseResponse.setContentType(type);
+
         return this;
     }
 
-    public void body(String json) {
+    public Response body(Map<String, String> claims) {
 
-        baseResponse.setStatus(HttpServletResponse.SC_OK);
+        writeJsonBody(Mapper.toJson(claims));
+
+        return this;
+    }
+
+    public Response body(String json) {
+
+        writeJsonBody(json);
+
+        return this;
+    }
+
+    public Response error(String error) {
+
+        details.put("error", error);
+
+        return this;
+    }
+
+    public Response message(String message) {
+
+        details.put("message", message);
+
+        return this;
+    }
+
+    public Response details(Map<String, String> claims) {
+
+        details.putAll(claims);
+
+        return this;
+    }
+
+    private void writeJsonBody(String json) {
 
         try {
             baseResponse.getWriter().print(json);
@@ -58,7 +109,10 @@ public class Response {
         }
     }
 
-    public void body(Map<String, Object> errorResponse) {
-//        baseResponse.sendError((Integer) errorResponse.get("status"));
+    public void build() {
+        baseResponse.setContentType("application/json");
+        details.put("status", Integer.toString(statusCode));
+
+        writeJsonBody(Mapper.toJson(details));
     }
 }

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.spareparts.store.controller.dto.ClientDTO;
 import com.spareparts.store.repository.entity.ClientEntity;
 import com.spareparts.store.service.model.Client;
+import com.spareparts.store.service.model.ClientCredentials;
 
 public class ClientMapperImpl implements ClientMapper {
 
@@ -48,5 +49,9 @@ public class ClientMapperImpl implements ClientMapper {
         } catch (JsonProcessingException e) {
             throw new RuntimeException("Error converting JSON to ClientDto", e);
         }
+    }
+
+    public Client toClient(ClientCredentials credentials) {
+        return new Client(null, credentials.getEmail(), credentials.getName(), credentials.getPassword(), null);
     }
 }

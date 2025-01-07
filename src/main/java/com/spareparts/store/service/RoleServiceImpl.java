@@ -22,6 +22,6 @@ public class RoleServiceImpl {
     }
 
     public Set<Permission> getRolePermissions(String roleName) {
-        return roleRepository.getRolePermissions(String roleName);
+        return roleRepository.getRolePermissions(roleName);
     }
 }

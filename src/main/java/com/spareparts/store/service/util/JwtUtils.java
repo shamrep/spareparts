@@ -1,4 +1,4 @@
-package com.spareparts.store.service;
+package com.spareparts.store.service.util;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -14,12 +14,6 @@ public class JwtUtils {
     // Token expiration time (e.g., 1 hour)
     private static final long EXPIRATION_TIME_MS = 3600_000;
 
-    /**
-     * Generate a JWT.
-     *
-     * @param claims Map of claims to include in the token.
-     * @return Generated JWT as a String.
-     */
     public static String generateToken(Map<String, Object> claims) {
         return Jwts.builder()
                 .claims(claims)
@@ -28,18 +22,16 @@ public class JwtUtils {
                 .signWith(SECRET_KEY).compact();
     }
 
-    /**
-     * Validate a JWT and return claims.
-     *
-     * @param token JWT token to validate.
-     * @return Claims from the token if valid.
-     * @throws JwtException if the token is invalid or expired.
-     */
-    public static Claims validateToken(String token) {
-        return Jwts.parserBuilder()
-                .setSigningKey(SECRET_KEY) // Provide the secret key used for signing
+//todo should return map
+    public static Claims decodeToken(String token) {
+        return Jwts.parser()
+                .verifyWith(SECRET_KEY) // Provide the secret key used for signing
                 .build()
-                .parseClaimsJws(token) // Validate the token
-                .getBody(); // Extract claims
+                .parseSignedClaims(token) // Validate the token
+                .getPayload(); // Extract claims
+    }
+
+    public static boolean validateToken(String token) {
+        return true;
     }
 }

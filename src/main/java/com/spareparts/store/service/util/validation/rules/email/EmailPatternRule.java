@@ -1,11 +1,12 @@
 package com.spareparts.store.service.util.validation.rules.email;
 
+import com.spareparts.store.service.util.validation.rules.AbstractRule;
 import com.spareparts.store.service.util.validation.rules.ValidationRule;
 import lombok.Getter;
 
 import java.util.regex.Pattern;
 
-public class EmailPatternRule implements ValidationRule<String> {
+public class EmailPatternRule extends AbstractRule<String> {
 
     public EmailPatternRule(String message) {
 

@@ -9,5 +9,12 @@ import lombok.Getter;
 @EqualsAndHashCode
 public class Route {
     private String path;
-    private String requestMethod;
+    private RequestMethods requestMethod;
+
+    public enum RequestMethods {
+        GET,
+        POST,
+        PUT,
+        DELETE
+    }
 }

@@ -1,82 +1,80 @@
 package com.spareparts.store.controller.actions;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.spareparts.store.controller.Request;
 import com.spareparts.store.controller.Response;
-import com.spareparts.store.service.ClientService;
+import com.spareparts.store.mapper.ClientMapperImpl;
+import com.spareparts.store.mapper.Mapper;
+import com.spareparts.store.service.ClientAuthorizationService;
 import com.spareparts.store.service.ClientServiceImpl;
+import com.spareparts.store.service.MapperException;
 import com.spareparts.store.service.model.Client;
-import jakarta.servlet.http.HttpServletResponse;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.spareparts.store.service.model.ClientCredentials;
+import com.spareparts.store.service.util.validation.exceptions.ValidationException;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.util.HashSet;
+import java.util.Map;
+import java.util.Optional;
 
 public class CreateClientHandler implements Handler {
-    private final ClientService clientService;
+
+    private final ClientServiceImpl clientService;
+    private final ClientMapperImpl clientMapper = new ClientMapperImpl();
+    private final ClientAuthorizationService clientAuthorizationService;
+
 
     public CreateClientHandler() {
+
         this.clientService = new ClientServiceImpl();
+        this.clientAuthorizationService = new ClientAuthorizationService();
     }
 
     @Override
     public void handle(Request request, Response response) {
 
-        BufferedReader reader = null;
         try {
-            reader = request.getReader();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
 
-        UserCredentials credentials = null;
-        ObjectMapper objectMapper = new ObjectMapper();
+            ClientCredentials credentials = Mapper.readValue(request.getReader(), ClientCredentials.class);
+            Client client = clientMapper.toClient(credentials);
 
-        try {
-            credentials = objectMapper.readValue(reader, UserCredentials.class);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+            Optional<Client> registeredClient = clientService.registerClient(client);
 
-        if (clientService.findClientByEmail(credentials.email).isPresent()) {
+            if (registeredClient.isPresent()) {
+                String clientToken = clientAuthorizationService.generateToken(registeredClient.get());
 
-            response.setStatus(HttpServletResponse.SC_CONFLICT);
+                response
+                        .setStatusCode(Response.SC_CREATED)
+                        .message("Authorization successful.")
+                        .details(
+                                Map.of("token", clientToken,
+                                        "expiresIn", clientAuthorizationService.getExpirationDate().toString()))
+                        .build();
 
-            try {
-                response.body(objectMapper.writeValueAsString(
-                        new ErrorResponse(
-                                HttpServletResponse.SC_CONFLICT,
-                                "Email already registered",
-                                credentials.email)));
-            } catch (JsonProcessingException e) {
-                throw new RuntimeException(e);
             }
+
+        } catch (MapperException e) {
+
+            response
+                    .error("Validation Error")
+                    .setStatusCode(Response.SC_BAD_REQUEST)
+                    .message("Invalid input data")
+                    .build();
+
+        } catch (ValidationException e) {
+
+            response
+                    .error("Validation Error")
+                    .setStatusCode(Response.SC_BAD_REQUEST)
+                    .message(e.getMessage())
+//                    .details()
+                    .build();
+
+        } catch (Exception e) {
+
+            response
+                    .error("Unexpected Error")
+                    .setStatusCode(Response.SC_INTERNAL_SERVER_ERROR)
+                    .message("An unexpected error occurred.")
+                    .build();
         }
 
-        Client client = new Client(null, credentials.email, credentials.name, credentials.password, new HashSet<>());
-
-        clientService.registerClient(client);
-    }
-
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @Getter
-    @Setter
-    private static class UserCredentials {
-        private String name;
-        private String email;
-        private String password;
-    }
-
-    @AllArgsConstructor
-    private static class ErrorResponse {
-        private int code;
-        private String error;
-        private String email;
     }
 }

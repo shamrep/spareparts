@@ -78,11 +78,12 @@ public class RoleRepositoryImpl implements RoleRepository {
     }
 
     public Set<Permission> getRolePermissions(String roleName) {
-        jdbcClient.sql("""
-                select * from permissions join roles on permissions.role_id = role.id
-                from 
-                    permissions join role_permissions on permission.id = role_permissions.permission_id 
-                where role_id = :roleId
-                """)
+//        jdbcClient.sql("""
+//                select * from permissions join roles on permissions.role_id = role.id
+//                from
+//                    permissions join role_permissions on permission.id = role_permissions.permission_id
+//                where role_id = :roleId
+//                """).param("roleId")
+        return null;
     }
 }
