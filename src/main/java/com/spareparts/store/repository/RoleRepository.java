@@ -18,4 +18,6 @@ public interface RoleRepository {
     List<PermissionEntity> findPermissionsByRoleId(Long roleId);
 
     public Set<Permission> getRolePermissions(String roleName);
+
+    void getClientRoles(long clientId);
 }

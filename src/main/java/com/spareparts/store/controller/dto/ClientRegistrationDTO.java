@@ -3,13 +3,10 @@ package com.spareparts.store.controller.dto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-@Getter
 @AllArgsConstructor
-public class ClientDTO {
-
-    private Long id;
-    private String name;
+@Getter
+public class ClientRegistrationDTO {
     private String email;
-//    private String password;
-
+    private String password;
+    private String name;
 }

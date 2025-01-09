@@ -11,7 +11,7 @@ import java.util.Objects;
 @EqualsAndHashCode
 public class ClientEntity {
 
-    private long id;
+    private Long id;
     private String email;
     private String name;
     private String password;

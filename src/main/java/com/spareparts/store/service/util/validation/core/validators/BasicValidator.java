@@ -17,15 +17,20 @@ public class BasicValidator implements Validator<Object> {
     private final Map<Class<? extends Annotation>, List<AbstractRule<?>>> annotationRulesMap = new HashMap<>();
 
     public BasicValidator() {
+
         // Map annotations to their validation rules
         annotationRulesMap.put(ValidEmail.class, List.of(
+
                 new AllowedDomainsRule("Email must be from an allowed domain."),
                 new EmailPatternRule("Not correct email.")
+
         ));
 
         annotationRulesMap.put(ValidPassword.class, List.of(
+
                 new BlankRule("Password cannot be null or blank."),
                 new ContainsDigitRule("Password should contain digits.")
+
         ));
     }
 
@@ -36,8 +41,10 @@ public class BasicValidator implements Validator<Object> {
         Field[] fields = objectToValidate.getClass().getDeclaredFields();
 
         for (Field field : fields) {
+
             field.setAccessible(true); // Allow access to private fields
             validateField(field, objectToValidate, validationErrorsMap);
+
         }
 
         return validationErrorsMap;
@@ -58,31 +65,32 @@ public class BasicValidator implements Validator<Object> {
                 if (!validateRule(rule, fieldValue)) {
 
                     fieldErrors.add(rule.getMessage());
+
                 }
             }
 
             if (!fieldErrors.isEmpty()) {
 
                 errors.computeIfAbsent(field.getName(), k -> new ArrayList<>()).addAll(fieldErrors);
+
             }
         }
     }
 
     private Object getFieldValue(Field field, Object objectToValidate) {
+
         try {
 
             return field.get(objectToValidate);
 
         } catch (IllegalAccessException e) {
-            throw new IllegalStateException(
 
-                    "Failed to access field '" + field.getName() + "' on object of type '" + objectToValidate.getClass().getName() + "'",
-                    e
-            );
+            throw new IllegalStateException(
+                    "Failed to access field '" + field.getName() +
+                            "' on object of type '" + objectToValidate.getClass().getName() + "'", e );
         }
     }
 
-    @SuppressWarnings("unchecked")
     private <T> boolean validateRule(AbstractRule<T> rule, Object value) {
 
         try {
@@ -92,7 +100,9 @@ public class BasicValidator implements Validator<Object> {
         } catch (ClassCastException e) {
 
             throw new IllegalArgumentException(
-                    "Validation rule is incompatible with the field type. Rule: " + rule.getClass().getName() + ", Value: " + value,
+                    "Validation rule is incompatible with the field type. Rule: "
+                            + rule.getClass().getName() +
+                            ", Value: " + value,
                     e
             );
         }

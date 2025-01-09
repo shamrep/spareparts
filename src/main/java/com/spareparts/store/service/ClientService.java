@@ -11,7 +11,7 @@ public interface ClientService {
     Optional<Client> getClientById(Long clientId);
     void deleteClient(Long clientId);
 
-    Optional<Client> validateCredentials(String email, String password);
+    Optional<Client> loginClient(String email, String password);
 
     Optional<Client> findClientByEmail(String email);
 }

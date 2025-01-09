@@ -11,7 +11,7 @@ public class Permission {
 
     private Long id;
     private String name;
-    private OffsetDateTime creationDate;
+//    private OffsetDateTime creationDate;
 
     public Permission() {
 

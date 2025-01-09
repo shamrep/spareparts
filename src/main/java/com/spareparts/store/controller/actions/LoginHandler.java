@@ -53,7 +53,7 @@ public class LoginHandler implements Handler {
         }
 
         Optional<Client> optionalClient
-                = clientService.validateCredentials(credentialsDto.getEmail(), credentialsDto.getPassword());
+                = clientService.loginClient(credentialsDto.getEmail(), credentialsDto.getPassword());
 
         if (optionalClient.isPresent()) {
 

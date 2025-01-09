@@ -7,19 +7,19 @@ import com.spareparts.store.mapper.JsonMapper;
 import com.spareparts.store.mapper.MapperException;
 import com.spareparts.store.service.ClientAuthorizationService;
 import com.spareparts.store.service.ClientServiceImpl;
+import com.spareparts.store.service.util.validation.exceptions.EmailAlreadyInUseException;
 import com.spareparts.store.service.model.Client;
 import com.spareparts.store.service.model.ClientCredentials;
 import com.spareparts.store.service.util.validation.exceptions.ValidationException;
-
 import java.util.Map;
 import java.util.Optional;
+
 
 public class CreateClientHandler implements Handler {
 
     private final ClientServiceImpl clientService;
     private final ClientMapperImpl clientMapper = new ClientMapperImpl();
     private final ClientAuthorizationService clientAuthorizationService;
-
 
     public CreateClientHandler() {
 
@@ -34,10 +34,10 @@ public class CreateClientHandler implements Handler {
 
             ClientCredentials credentials = JsonMapper.fromJson(request.getBody(), ClientCredentials.class);
             Client client = clientMapper.toClient(credentials);
-
             Optional<Client> registeredClient = clientService.registerClient(client);
 
             if (registeredClient.isPresent()) {
+
                 String clientToken = clientAuthorizationService.generateToken(registeredClient.get());
 
                 response
@@ -46,6 +46,14 @@ public class CreateClientHandler implements Handler {
                         .details(
                                 Map.of("token", clientToken,
                                         "expiresIn", clientAuthorizationService.getExpirationDate().toString()))
+                        .build();
+
+            } else {
+
+                response
+                        .setStatusCode(Response.SC_CONFLICT)
+                        .message("Client registration failed.")
+                        .error("Conflict")
                         .build();
 
             }
@@ -66,7 +74,13 @@ public class CreateClientHandler implements Handler {
                     .message(e.getMessage())
 //                    .details()
                     .build();
-        }
 
+        } catch (EmailAlreadyInUseException e) {
+            response
+                    .setStatusCode(Response.SC_CONFLICT)
+                    .message("Client registration failed.")
+                    .error("Email already registered.")
+                    .build();
+        }
     }
 }

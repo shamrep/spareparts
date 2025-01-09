@@ -86,4 +86,20 @@ public class RoleRepositoryImpl implements RoleRepository {
 //                """).param("roleId")
         return null;
     }
+
+    @Override
+    public void getClientRoles(long clientId) {
+        jdbcClient.sql("""
+                select 
+                    roles.id, 
+                    roles.name, 
+                    created_at 
+                from roles join clients on roles.client_id = clients.id
+                where client.id = :clientId
+                """)
+                .param("clientId", clientId)
+                .query(RoleEntity.class)
+                .list();
+        //how do they do it?
+    }
 }

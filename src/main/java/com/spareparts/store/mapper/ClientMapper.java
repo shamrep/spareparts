@@ -3,6 +3,9 @@ package com.spareparts.store.mapper;
 import com.spareparts.store.controller.dto.ClientDTO;
 import com.spareparts.store.repository.entity.ClientEntity;
 import com.spareparts.store.service.model.Client;
+import com.spareparts.store.service.model.Role;
+
+import java.util.Set;
 
 
 public interface ClientMapper {
@@ -10,15 +13,12 @@ public interface ClientMapper {
     Client toClient(ClientDTO clientDTO);
 
     // Map from Client (Service) to ClientEntity (Repository)
-    ClientEntity toClientEntity(Client client);
+    ClientEntity toNewClientEntity(Client client);
 
     // Map from ClientEntity (Repository) to Client (Service) if needed
-    Client toClient(ClientEntity clientEntity);
+    Client toClient(ClientEntity clientEntity, Set<Role> roles);
 
     // Optional: Map from Client (Service) to ClientDTO (Controller) if you need to return to the controller
     ClientDTO toClientDTO(Client client);
 
-    String toJson(ClientDTO clientDto);
-
-    ClientDTO jsonToClientDTO(String clientJson);
 }
