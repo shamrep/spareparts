@@ -19,5 +19,5 @@ public interface RoleRepository {
 
     public Set<Permission> getRolePermissions(String roleName);
 
-    void getClientRoles(long clientId);
+    Set<RoleEntity> getClientRoles(long clientId);
 }

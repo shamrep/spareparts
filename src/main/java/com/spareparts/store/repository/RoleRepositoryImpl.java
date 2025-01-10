@@ -88,8 +88,9 @@ public class RoleRepositoryImpl implements RoleRepository {
     }
 
     @Override
-    public void getClientRoles(long clientId) {
-        jdbcClient.sql("""
+    public Set<RoleEntity> getClientRoles(long clientId) {
+
+       return jdbcClient.sql("""
                 select 
                     roles.id, 
                     roles.name, 
@@ -99,7 +100,8 @@ public class RoleRepositoryImpl implements RoleRepository {
                 """)
                 .param("clientId", clientId)
                 .query(RoleEntity.class)
-                .list();
+               .set();
         //how do they do it?
     }
+    
 }

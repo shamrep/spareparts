@@ -9,6 +9,7 @@ public class DeleteClientHandler implements Handler {
 
     private final ClientServiceImpl clientService;
     private ClientAuthorizationService authorizationService;
+    private static String PERMISSION = "deleteClient";
 
     public DeleteClientHandler() {
 
@@ -18,9 +19,8 @@ public class DeleteClientHandler implements Handler {
     @Override
     public void handle(Request request, Response response) {
 
-        //can I store permissions in cache
 
-        long toDeleteClientId = 0;
+        long toDeleteClientId = Long.getLong(request.getPathParameter("clientId"));
 
 
         String authorizationHeader  = request.getHeader("Authorization");
@@ -30,8 +30,8 @@ public class DeleteClientHandler implements Handler {
             token = authorizationHeader.substring(7);
         }
 
-
-
+        //todo:  add permission check
+        clientService.deleteClient(toDeleteClientId);
 
     }
 }

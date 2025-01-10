@@ -10,6 +10,7 @@ import com.spareparts.store.service.model.Role;
 import java.time.OffsetDateTime;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class RoleServiceImpl {
 
@@ -45,7 +46,7 @@ public class RoleServiceImpl {
 
     Set<Role> getClientRoles(long clientId) {
 
-        roleRepository.getClientRoles(clientId);
+        return roleRepository.getClientRoles(clientId).stream().map(RoleMapper::toRole).collect(Collectors.toSet());
 
     }
 }

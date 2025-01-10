@@ -1,18 +1,21 @@
 package com.spareparts.store.mapper;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.spareparts.store.controller.dto.ClientCredentialsDTO;
 import com.spareparts.store.controller.dto.ClientDTO;
+import com.spareparts.store.controller.dto.ClientRegistrationDTO;
 import com.spareparts.store.repository.entity.ClientEntity;
 import com.spareparts.store.service.model.Client;
-import com.spareparts.store.service.model.ClientCredentials;
+import com.spareparts.store.service.model.Role;
+
+import java.util.Set;
 
 public class ClientMapperImpl implements ClientMapper {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
-    public  Client toClient(ClientDTO clientDTO) {
+    public Client toClient(ClientDTO clientDTO) {
         return null;
     }
 
@@ -24,9 +27,10 @@ public class ClientMapperImpl implements ClientMapper {
     }
 
     @Override
-    public Client toClient(ClientEntity clientEntity) {
+    public Client toClient(ClientEntity clientEntity, Set<Role> roles) {
 
-        return new Client(clientEntity.getId(), clientEntity.getEmail(), clientEntity.getName(), clientEntity.getPassword(), null);
+        return new Client(clientEntity.getId(), clientEntity.getEmail(), clientEntity.getName(), clientEntity.getPassword(), roles);
+
     }
 
     @Override
@@ -35,7 +39,15 @@ public class ClientMapperImpl implements ClientMapper {
         return new ClientDTO(client.getId(), client.getName(), client.getEmail());
     }
 
-    public Client toClient(ClientCredentials credentials) {
-        return new Client(null, credentials.getEmail(), credentials.getName(), credentials.getPassword(), null);
+    public Client toClient(ClientCredentialsDTO credentialsDTO) {
+
+        return new Client(null, credentialsDTO.getEmail(), null, credentialsDTO.getPassword(), null);
+
+    }
+
+    public Client toClient(ClientRegistrationDTO registrationDTO) {
+
+        return new Client(null, registrationDTO.getEmail(), registrationDTO.getName(), registrationDTO.getPassword(), null);
+
     }
 }

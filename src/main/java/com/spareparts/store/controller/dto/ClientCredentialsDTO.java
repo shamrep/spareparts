@@ -1,12 +1,13 @@
-package com.spareparts.store.service.model;
+package com.spareparts.store.controller.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public class ClientCredentials {
-    private String name;
+public class ClientCredentialsDTO {
+
     private String email;
     private String password;
+
 }

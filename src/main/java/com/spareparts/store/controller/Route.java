@@ -8,7 +8,7 @@ import lombok.Getter;
 @Getter
 @EqualsAndHashCode
 public class Route {
-    private String path;
+    private String pathTemplate;
     private RequestMethods requestMethod;
 
     public enum RequestMethods {

@@ -81,7 +81,7 @@ public class ClientServiceImplTest {
         when(clientMapper.toNewClientEntity(any(Client.class))).thenReturn(clientEntity);
         when(clientRepository.save(any(ClientEntity.class))).thenReturn(1L);
         when(clientRepository.findById(1L)).thenReturn(Optional.of(clientEntity));
-        when(clientMapper.toClient(any(ClientEntity.class))).thenReturn(hashedClient);
+        when(clientMapper.toClient(any(ClientEntity.class), any(Set.class))).thenReturn(hashedClient);
 
         // Act
         Optional<Client> result = clientService.registerClient(inputClient);

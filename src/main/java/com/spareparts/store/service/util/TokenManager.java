@@ -7,7 +7,7 @@ import javax.crypto.SecretKey;
 import java.util.Date;
 import java.util.Map;
 
-public class JwtUtils {
+public class TokenManager {
     // Replace this with your secure secret key
     private static final SecretKey SECRET_KEY = Jwts.SIG.HS256.key().build();
 
@@ -15,6 +15,7 @@ public class JwtUtils {
     private static final long EXPIRATION_TIME_MS = 3600_000;
 
     public static String generateToken(Map<String, Object> claims) {
+
         return Jwts.builder()
                 .claims(claims)
                 .issuedAt(new Date())
@@ -22,9 +23,11 @@ public class JwtUtils {
                 .signWith(SECRET_KEY).compact();
     }
 
-//todo should return map
+    //todo should return map
     public static Claims decodeToken(String token) {
-        return Jwts.parser()
+
+        return Jwts
+                .parser()
                 .verifyWith(SECRET_KEY) // Provide the secret key used for signing
                 .build()
                 .parseSignedClaims(token) // Validate the token
@@ -32,6 +35,22 @@ public class JwtUtils {
     }
 
     public static boolean validateToken(String token) {
-        return true;
+
+        try {
+
+            Jwts
+                .parser()
+                .verifyWith(SECRET_KEY)
+                .build()
+                .parseSignedClaims(token);
+
+            return true;
+
+        } catch (Exception e) {
+
+            return false;
+
+        }
     }
+
 }

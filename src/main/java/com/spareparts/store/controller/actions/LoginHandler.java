@@ -57,7 +57,7 @@ public class LoginHandler implements Handler {
 
         if (optionalClient.isPresent()) {
 
-            String token = clientAuthorizationService.generateToken(optionalClient.get());
+            String token = clientAuthorizationService.authenticateClient(optionalClient.get());
             OffsetDateTime expirationDate = clientAuthorizationService.getExpirationDate();
 
             LoginResponse loginResponse = new LoginResponse(

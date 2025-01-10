@@ -2,6 +2,7 @@ package com.spareparts.store.controller.actions;
 
 import com.spareparts.store.controller.Request;
 import com.spareparts.store.controller.Response;
+import com.spareparts.store.controller.dto.ClientRegistrationDTO;
 import com.spareparts.store.mapper.ClientMapperImpl;
 import com.spareparts.store.mapper.JsonMapper;
 import com.spareparts.store.mapper.MapperException;
@@ -9,7 +10,6 @@ import com.spareparts.store.service.ClientAuthorizationService;
 import com.spareparts.store.service.ClientServiceImpl;
 import com.spareparts.store.service.util.validation.exceptions.EmailAlreadyInUseException;
 import com.spareparts.store.service.model.Client;
-import com.spareparts.store.service.model.ClientCredentials;
 import com.spareparts.store.service.util.validation.exceptions.ValidationException;
 import java.util.Map;
 import java.util.Optional;
@@ -32,13 +32,13 @@ public class CreateClientHandler implements Handler {
 
         try {
 
-            ClientCredentials credentials = JsonMapper.fromJson(request.getBody(), ClientCredentials.class);
-            Client client = clientMapper.toClient(credentials);
+            ClientRegistrationDTO registrationDTO = JsonMapper.fromJson(request.getBody(), ClientRegistrationDTO .class);
+            Client client = clientMapper.toClient(registrationDTO);
             Optional<Client> registeredClient = clientService.registerClient(client);
 
             if (registeredClient.isPresent()) {
 
-                String clientToken = clientAuthorizationService.generateToken(registeredClient.get());
+                String clientToken = clientAuthorizationService.authenticateClient(registeredClient.get());
 
                 response
                         .setStatusCode(Response.SC_CREATED)
@@ -76,11 +76,13 @@ public class CreateClientHandler implements Handler {
                     .build();
 
         } catch (EmailAlreadyInUseException e) {
+
             response
                     .setStatusCode(Response.SC_CONFLICT)
                     .message("Client registration failed.")
                     .error("Email already registered.")
                     .build();
+
         }
     }
 }

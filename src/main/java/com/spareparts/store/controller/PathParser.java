@@ -1,5 +1,6 @@
 package com.spareparts.store.controller;
 
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -17,7 +18,7 @@ public class PathParser {
         throw new IllegalArgumentException("Path does not match the route");
     }
 
-    public static String transformToTemplate(String path) {
+    public static String transformToTemplate(String path, Set<String> paths) {
         // Define a regex pattern for numeric segments (or customize for other patterns)
         Pattern pattern = Pattern.compile("/\\d+");
         return pattern.matcher(path).replaceAll("/{id}");

@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @AllArgsConstructor
 public class Request {
@@ -63,5 +65,19 @@ public class Request {
         }
 
         return requestBody.toString();
+    }
+
+    public String getPathParameter(String parameterName) {
+
+        String regex = baseRequest.getPathInfo().replaceAll("\\{([^/]+)}", "(?<$1>[^/]+)");
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher("dfsd");
+
+        if (matcher.matches()) {
+            // Return the captured value of the named group
+            return matcher.group(parameterName);
+        } else {
+            throw new IllegalArgumentException("Path parameter not found: " + parameterName);
+        }
     }
 }
