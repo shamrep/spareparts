@@ -54,6 +54,7 @@ public class DispatcherImpl implements Dispatcher {
             Route route = entry.getKey();
 
             if (route.getRequestMethod() == requestMethod) {
+
                 String regex = route.getPathTemplate().replaceAll("\\{[^/]+}", "([^/]+)");
 
                 Pattern pattern = Pattern.compile(regex);
