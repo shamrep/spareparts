@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.Map;
 
 public class TokenManager {
+
     // Replace this with your secure secret key
     private static final SecretKey SECRET_KEY = Jwts.SIG.HS256.key().build();
 
