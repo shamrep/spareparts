@@ -27,7 +27,7 @@ public class RoleRepositoryImplTest {
         databaseTestManager.setConnectionAutoCommit(false);
 
         jdbcClient = databaseTestManager.getJdbcClient();
-        roleRepository = new RoleRepositoryImpl(jdbcClient);
+        roleRepository = new RoleRepository(jdbcClient);
     }
 
     @AfterAll

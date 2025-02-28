@@ -7,7 +7,7 @@ import com.spareparts.store.mapper.ClientMapperImpl;
 import com.spareparts.store.mapper.JsonMapper;
 import com.spareparts.store.mapper.MapperException;
 import com.spareparts.store.service.ClientAuthorizationService;
-import com.spareparts.store.service.ClientServiceImpl;
+import com.spareparts.store.service.ClientService;
 import com.spareparts.store.service.util.validation.exceptions.EmailAlreadyInUseException;
 import com.spareparts.store.service.model.Client;
 import com.spareparts.store.service.util.validation.exceptions.ValidationException;
@@ -17,13 +17,13 @@ import java.util.Optional;
 
 public class CreateClientHandler implements Handler {
 
-    private final ClientServiceImpl clientService;
+    private final ClientService clientService;
     private final ClientMapperImpl clientMapper = new ClientMapperImpl();
     private final ClientAuthorizationService clientAuthorizationService;
 
     public CreateClientHandler() {
 
-        this.clientService = new ClientServiceImpl();
+        this.clientService = new ClientService();
         this.clientAuthorizationService = new ClientAuthorizationService();
     }
 

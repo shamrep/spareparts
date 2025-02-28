@@ -16,7 +16,7 @@ import java.time.OffsetDateTime;
 import java.util.Optional;
 
 
-class MembershipRepositoryImplTest {
+class MembershipRepositoryTest {
 
     private static DatabaseTestManager databaseTestManager;
     private static JdbcClient jdbcClient;
@@ -30,7 +30,7 @@ class MembershipRepositoryImplTest {
         databaseTestManager.runLiquibaseMigration();
         databaseTestManager.setConnectionAutoCommit(false);
         jdbcClient = databaseTestManager.getJdbcClient();
-        membershipRepository = new MembershipRepositoryImpl(jdbcClient);
+        membershipRepository = new MembershipRepository(jdbcClient);
     }
 
     @AfterAll

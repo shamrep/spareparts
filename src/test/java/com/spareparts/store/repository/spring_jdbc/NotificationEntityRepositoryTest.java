@@ -1,6 +1,5 @@
 package com.spareparts.store.repository.spring_jdbc;
 
-import com.spareparts.store.repository.entity.ClientEntity;
 import com.spareparts.store.repository.entity.NotificationEntity;
 import com.spareparts.store.repository.util.DatabaseTestManager;
 import org.junit.jupiter.api.AfterAll;
@@ -16,7 +15,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 
 //@TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class NotificationEntityRepositoryImplTest {
+class NotificationEntityRepositoryTest {
 
     static NotificationEntityRepository testNotificationEntityRepository;
     static DatabaseTestManager databaseTestManager = new DatabaseTestManager();;
@@ -31,7 +30,7 @@ class NotificationEntityRepositoryImplTest {
 
         testJdbcTemplate = databaseTestManager.getJdbcTemplate();
 
-        testNotificationEntityRepository = new NotificationEntityRepositoryImpl(testJdbcTemplate);
+        testNotificationEntityRepository = new NotificationEntityRepository(testJdbcTemplate);
     }
 
     @AfterAll

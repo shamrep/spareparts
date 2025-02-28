@@ -3,17 +3,17 @@ package com.spareparts.store.controller.actions;
 import com.spareparts.store.controller.Request;
 import com.spareparts.store.controller.Response;
 import com.spareparts.store.service.ClientAuthorizationService;
-import com.spareparts.store.service.ClientServiceImpl;
+import com.spareparts.store.service.ClientService;
 
 public class DeleteClientHandler implements Handler {
 
-    private final ClientServiceImpl clientService;
+    private final ClientService clientService;
     private ClientAuthorizationService authorizationService;
     private static String PERMISSION = "deleteClient";
 
     public DeleteClientHandler() {
 
-        this.clientService = new ClientServiceImpl();
+        this.clientService = new ClientService();
     }
 
     @Override

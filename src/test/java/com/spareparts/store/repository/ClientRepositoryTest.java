@@ -11,7 +11,7 @@ import org.springframework.jdbc.core.simple.JdbcClient;
 
 import java.util.Optional;
 
-public class ClientRepositoryImplTest {
+public class ClientRepositoryTest {
     private static DatabaseTestManager databaseTestManager;
     private static JdbcClient jdbcClient;
     private static ClientRepository clientRepository;
@@ -24,7 +24,7 @@ public class ClientRepositoryImplTest {
         databaseTestManager.runLiquibaseMigration();
         databaseTestManager.setConnectionAutoCommit(false);
         jdbcClient = databaseTestManager.getJdbcClient();
-        clientRepository = new ClientRepositoryImpl(jdbcClient);
+        clientRepository = new ClientRepository(jdbcClient);
     }
 
     @AfterAll

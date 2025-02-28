@@ -1,17 +1,131 @@
 package com.spareparts.store.service;
 
+import com.spareparts.store.mapper.ClientMapper;
+import com.spareparts.store.mapper.ClientMapperImpl;
+import com.spareparts.store.repository.ClientRepository;
+import com.spareparts.store.repository.entity.ClientEntity;
 import com.spareparts.store.service.model.Client;
+import com.spareparts.store.service.model.Role;
+import com.spareparts.store.service.util.PasswordUtil;
+import com.spareparts.store.service.util.validation.core.validators.BasicValidator;
+import com.spareparts.store.service.util.validation.exceptions.EmailAlreadyInUseException;
+import com.spareparts.store.service.util.validation.exceptions.ValidationException;
+import lombok.AllArgsConstructor;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
-public interface ClientService {
-    Optional<Client> registerClient(Client client);
-    List<Client> getAllClients();
-    Optional<Client> getClientById(Long clientId);
-    void deleteClient(Long clientId);
+@AllArgsConstructor
+public class ClientService {
 
-    Optional<Client> loginClient(String email, String password);
+    private final ClientMapper clientMapper;
+    private ClientRepository clientRepository;
+    private RoleService roleService;
+    private BasicValidator validator;
 
-    Optional<Client> findClientByEmail(String email);
+    public ClientService() {
+
+        this.clientMapper = new ClientMapperImpl();
+        this.clientRepository = new ClientRepository();
+        this.roleService = new RoleService();
+        this.validator = new BasicValidator();
+
+    }
+
+    public ClientService(BasicValidator validator, RoleService roleService, ClientRepository clientRepository, ClientMapper clientMapper) {
+
+        this.validator = validator;
+        this.roleService = roleService;
+        this.clientRepository = clientRepository;
+        this.clientMapper = clientMapper;
+
+    }
+
+    public Optional<Client> registerClient(Client client) {
+
+        String hashedPassword = PasswordUtil.hashPassword(client.getPassword());
+
+        if (clientRepository.existsByEmail(client.getEmail())) {
+
+            throw new EmailAlreadyInUseException(client.getEmail());
+
+        }
+
+        validateClientCredentials(client);
+
+        Set<Role> roles = new HashSet<>();
+        roles.add(roleService.getDefaultRole());
+
+        ClientEntity clientEntity = clientMapper.toNewClientEntity(
+
+                new Client(
+                        null,
+                        client.getEmail(),
+                        client.getName(),
+                        hashedPassword,
+                        roles
+                )
+        );
+
+        long clientGeneratedId = clientRepository.save(clientEntity);
+
+        return clientRepository.findById(clientGeneratedId)
+                .map(entity -> clientMapper.toClient(entity, roleService.getClientRoles(clientGeneratedId)));
+
+    }
+
+    private void validateClientCredentials(Client client) {
+
+        Map<String, List<String>> errors = validator.validate(client);
+
+        if (!errors.isEmpty()) {
+            throw new ValidationException("Client validation failed.", errors);
+        }
+
+    }
+
+    public List<Client> getAllClients() {
+
+        return List.of(new Client(1L, "test", "bot", "1234", null),
+                new Client(2L, "test", "bot", "1234", null));
+
+    }
+
+    public Optional<Client> getClientById(Long clientId) {
+
+        Optional<ClientEntity> clientEntity = clientRepository.findById(clientId);
+
+        return clientEntity.map(entity -> clientMapper.toClient(entity, roleService.getClientRoles(clientId)));
+
+    }
+
+    public void deleteClient(Long clientId) {
+
+    }
+
+    public Optional<Client> loginClient(String email, String password) {
+
+        Optional<Client> client = findClientByEmail(email);
+        String hashPassword = PasswordUtil.hashPassword(password);
+
+        return client.filter(c -> c.getPassword().equals(hashPassword));
+
+    }
+
+
+    public Optional<Client> findClientByEmail(String email) {
+
+        return clientRepository
+                .findByEmail(email)
+                .map(entity -> clientMapper.toClient(entity, roleService.getClientRoles(entity.getId())));
+
+    }
+
+    private boolean hasPermission(Client client, String requiredPermission) {
+
+        return client.getRoles().stream()
+                .flatMap(role -> role.getPermissions().stream())
+                .anyMatch(permission -> permission.getName().equals(requiredPermission));
+
+    }
+
 }

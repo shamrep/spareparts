@@ -7,7 +7,6 @@ import com.spareparts.store.mapper.JsonMapper;
 import com.spareparts.store.mapper.MapperException;
 import com.spareparts.store.service.ClientAuthorizationService;
 import com.spareparts.store.service.ClientService;
-import com.spareparts.store.service.ClientServiceImpl;
 import com.spareparts.store.service.model.Client;
 import com.spareparts.store.service.model.Role;
 import lombok.AllArgsConstructor;
@@ -24,7 +23,7 @@ public class LoginHandler implements Handler {
 
     public LoginHandler() {
 
-        this.clientService = new ClientServiceImpl();
+        this.clientService = new ClientService();
         this.clientAuthorizationService = new ClientAuthorizationService();
 
     }

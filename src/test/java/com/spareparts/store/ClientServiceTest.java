@@ -5,8 +5,7 @@ import com.spareparts.store.mapper.ClientMapperImpl;
 import com.spareparts.store.repository.ClientRepository;
 import com.spareparts.store.repository.entity.ClientEntity;
 import com.spareparts.store.service.ClientService;
-import com.spareparts.store.service.ClientServiceImpl;
-import com.spareparts.store.service.RoleServiceImpl;
+import com.spareparts.store.service.RoleService;
 import com.spareparts.store.service.model.Client;
 import com.spareparts.store.service.model.Permission;
 import com.spareparts.store.service.model.Role;
@@ -25,21 +24,21 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
 
 
-public class ClientServiceImplTest {
+public class ClientServiceTest {
 
     private ClientService clientService;
     private ClientRepository clientRepository;
     private final ClientMapper clientMapper = new ClientMapperImpl();
-    private RoleServiceImpl roleService;
+    private RoleService roleService;
     private BasicValidator validator;
 
     @BeforeEach
     void setup() {
 
         clientRepository = mock(ClientRepository.class);
-        roleService = mock(RoleServiceImpl.class);
+        roleService = mock(RoleService.class);
         validator = mock(BasicValidator.class);
-        clientService = new ClientServiceImpl(clientMapper, clientRepository, roleService, validator);
+        clientService = new ClientService(clientMapper, clientRepository, roleService, validator);
 
     }
 
