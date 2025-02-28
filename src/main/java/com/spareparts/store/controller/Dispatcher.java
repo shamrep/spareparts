@@ -8,7 +8,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class Dispatcher implements Dispatcher {
+public class Dispatcher {
 
     Map<Route, Handler> handlers = new HashMap<>();
 
@@ -22,7 +22,6 @@ public class Dispatcher implements Dispatcher {
 //        handlers.put(new Route("/client/{clientId}/photos/{photoId}", Route.RequestMethods.GET), new GetClientPhotosHandler());
     }
 
-    @Override
     public void dispatch(Request request, Response response) {
 
        Handler handler = getHandler(Route.RequestMethods.valueOf(request.getMethod()), request.getPath());
