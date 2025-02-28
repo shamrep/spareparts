@@ -9,7 +9,7 @@ import java.io.IOException;
 
 public class FrontController extends HttpServlet {
 
-    private final Dispatcher dispatcher = new DispatcherImpl();
+    private final Dispatcher dispatcher = new Dispatcher();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
