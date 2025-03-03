@@ -7,6 +7,8 @@ import org.apache.catalina.Context;
 import org.apache.catalina.LifecycleException;
 import org.apache.catalina.startup.ContextConfig;
 import org.apache.catalina.startup.Tomcat;
+import org.apache.tomcat.util.descriptor.web.FilterDef;
+import org.apache.tomcat.util.descriptor.web.FilterMap;
 
 import java.io.File;
 import java.util.Optional;
@@ -17,37 +19,56 @@ public class EmbeddedTomcatServer {
     public static final Optional<String> HOSTNAME = Optional.ofNullable(System.getenv("HOSTNAME"));
 
     public void start() {
-
         String contextPath = "/gymapp";
-        String appBase = ".";
         Tomcat tomcat = new Tomcat();
 
-        //define port, host, contextpath
-        tomcat.setPort(Integer.valueOf(PORT.orElse("8080")));
+        // Define a safe port
+        int port = PORT.map(p -> {
+            try {
+                return Integer.parseInt(p);
+            } catch (NumberFormatException e) {
+                return 8080; // Default port
+            }
+        }).orElse(8080);
+
+        tomcat.setPort(port);
         tomcat.setHostname(HOSTNAME.orElse("localhost"));
-        tomcat.getHost().setAppBase(appBase);
-//        tomcat.addWebapp(contextPath, appBase);
 
+        // Create context BEFORE adding filters
+        Context context = tomcat.addContext(contextPath, new File(".").getAbsolutePath());
+        context.addLifecycleListener(new ContextConfig()); // Enables annotation scanning
 
-        //annotation scanning
-        Context context = tomcat.addContext("", new File(".").getAbsolutePath());
-//        context.addLifecycleListener(new ContextConfig());
+        // Register JWT Auth Filter BEFORE Tomcat starts
+//        FilterRegistration.Dynamic jwtFilter = context.getServletContext().addFilter("jwtAuthFilter", new JwtAuthFilter());
+//        jwtFilter.addMappingForUrlPatterns(null, false, "/secured/*"); // Apply only to secured paths
 
-        FilterRegistration.Dynamic jwtFilter = context.getServletContext().addFilter("jwtAuthFilter", new JwtAuthFilter());
-        jwtFilter.addMappingForUrlPatterns(null, false, "/*");
+//        Class filterClass = JwtAuthFilter.class;
+//        FilterDef myFilterDef = new FilterDef();
+//        myFilterDef.setFilterClass(filterClass.getName());
+//        myFilterDef.setFilterName(filterClass.getSimpleName());
+//        context.addFilterDef(myFilterDef);
+//
+//        FilterMap myFilterMap = new FilterMap();
+//        myFilterMap.setFilterName(filterClass.getSimpleName());
+//        myFilterMap.addURLPattern("/*");
+//        context.addFilterMap(myFilterMap);
 
+        // Register FrontController
         Tomcat.addServlet(context, "FrontController", new FrontController());
         context.addServletMappingDecoded("/*", "FrontController");
 
-
-//        tomcat.getConnector();
+        // Ensure the connector is initialized
+        tomcat.getConnector();
 
         try {
             tomcat.start();
         } catch (LifecycleException e) {
-            throw new RuntimeException(e);
+            System.err.println("Failed to start Tomcat: " + e.getMessage());
+            e.printStackTrace();
+            return;
         }
 
+        System.out.println("Server started on port " + port);
         tomcat.getServer().await();
     }
 
