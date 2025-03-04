@@ -1,5 +1,6 @@
 package com.spareparts.store.repository.entity;
 
+import com.spareparts.store.service.model.RoleEnum;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -13,7 +14,7 @@ import java.util.Objects;
 //@EqualsAndHashCode
 public class RoleEntity {
     private Long id;
-    private String name;
+    private RoleEnum name;
     private OffsetDateTime createdAt;
 //    private Long creatorId;
 

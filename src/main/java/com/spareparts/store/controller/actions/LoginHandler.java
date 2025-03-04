@@ -3,6 +3,8 @@ package com.spareparts.store.controller.actions;
 import com.spareparts.store.controller.HandleError;
 import com.spareparts.store.controller.Request;
 import com.spareparts.store.controller.Response;
+import com.spareparts.store.controller.dto.ClientCredentialsDTO;
+import com.spareparts.store.controller.dto.ClientDTO;
 import com.spareparts.store.mapper.JsonMapper;
 import com.spareparts.store.mapper.MapperException;
 import com.spareparts.store.service.ClientAuthorizationService;
@@ -11,6 +13,7 @@ import com.spareparts.store.service.model.Client;
 import com.spareparts.store.service.model.Role;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.OffsetDateTime;
 import java.util.Optional;
@@ -91,6 +94,7 @@ public class LoginHandler implements Handler {
                     .build();
 
         }
+        
     }
 
     @Getter
@@ -111,8 +115,10 @@ public class LoginHandler implements Handler {
             private Set<Role> roles;
 
         }
+
     }
 
+    @NoArgsConstructor
     @AllArgsConstructor
     @Getter
     private static class CredentialsDTO {
@@ -121,4 +127,5 @@ public class LoginHandler implements Handler {
         private String password;
 
     }
+
 }

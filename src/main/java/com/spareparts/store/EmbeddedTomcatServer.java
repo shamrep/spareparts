@@ -19,7 +19,7 @@ public class EmbeddedTomcatServer {
     public static final Optional<String> HOSTNAME = Optional.ofNullable(System.getenv("HOSTNAME"));
 
     public void start() {
-        String contextPath = "/gymapp";
+        String contextPath = "";
         Tomcat tomcat = new Tomcat();
 
         // Define a safe port
@@ -36,22 +36,19 @@ public class EmbeddedTomcatServer {
 
         // Create context BEFORE adding filters
         Context context = tomcat.addContext(contextPath, new File(".").getAbsolutePath());
-        context.addLifecycleListener(new ContextConfig()); // Enables annotation scanning
+//        context.addLifecycleListener(new ContextConfig()); // Enables annotation scanning
 
-        // Register JWT Auth Filter BEFORE Tomcat starts
-//        FilterRegistration.Dynamic jwtFilter = context.getServletContext().addFilter("jwtAuthFilter", new JwtAuthFilter());
-//        jwtFilter.addMappingForUrlPatterns(null, false, "/secured/*"); // Apply only to secured paths
 
-//        Class filterClass = JwtAuthFilter.class;
-//        FilterDef myFilterDef = new FilterDef();
-//        myFilterDef.setFilterClass(filterClass.getName());
-//        myFilterDef.setFilterName(filterClass.getSimpleName());
-//        context.addFilterDef(myFilterDef);
-//
-//        FilterMap myFilterMap = new FilterMap();
-//        myFilterMap.setFilterName(filterClass.getSimpleName());
-//        myFilterMap.addURLPattern("/*");
-//        context.addFilterMap(myFilterMap);
+        Class filterClass = JwtAuthFilter.class;
+        FilterDef myFilterDef = new FilterDef();
+        myFilterDef.setFilterClass(filterClass.getName());
+        myFilterDef.setFilterName(filterClass.getSimpleName());
+        context.addFilterDef(myFilterDef);
+
+        FilterMap myFilterMap = new FilterMap();
+        myFilterMap.setFilterName(filterClass.getSimpleName());
+        myFilterMap.addURLPattern("/*");
+        context.addFilterMap(myFilterMap);
 
         // Register FrontController
         Tomcat.addServlet(context, "FrontController", new FrontController());
@@ -70,6 +67,7 @@ public class EmbeddedTomcatServer {
 
         System.out.println("Server started on port " + port);
         tomcat.getServer().await();
+
     }
 
 }

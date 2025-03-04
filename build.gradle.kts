@@ -36,8 +36,14 @@ dependencies {
 	implementation("com.zaxxer:HikariCP:6.1.0")
 
 	implementation ("org.springframework.security:spring-security-crypto")
+
 	implementation("io.jsonwebtoken:jjwt-api:0.12.6")
 	runtimeOnly("io.jsonwebtoken:jjwt-impl:0.12.6")
+	runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.12.6")
+
+	implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.16.1") // Latest version
+
+
 
 	compileOnly("jakarta.servlet:jakarta.servlet-api:6.1.0")
 	implementation("com.fasterxml.jackson.core:jackson-core:2.18.2")

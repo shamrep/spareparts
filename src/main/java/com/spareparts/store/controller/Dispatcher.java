@@ -20,6 +20,7 @@ public class Dispatcher {
         handlers.put(new Route("/client/{id}", Route.RequestMethods.DELETE), new DeleteClientHandler());
         handlers.put(new Route("/client/{clientId}/membership/{membershipId}", Route.RequestMethods.GET), new GetClientMembershipHandler());
         handlers.put(new Route("/stats", Route.RequestMethods.GET), new GetStatsHandler());
+        handlers.put(new Route("/login", Route.RequestMethods.POST), new LoginHandler());
 //        handlers.put(new Route("/client/{clientId}/photos/{photoId}", Route.RequestMethods.GET), new GetClientPhotosHandler());
 
     }
@@ -40,7 +41,7 @@ public class Dispatcher {
 
             }
         } catch (Exception e) {
-
+            System.out.println(e);
             new InternalErrorHandler().handle(request, response);
         }
     }

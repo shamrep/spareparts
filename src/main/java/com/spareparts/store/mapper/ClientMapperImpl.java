@@ -8,6 +8,7 @@ import com.spareparts.store.repository.entity.ClientEntity;
 import com.spareparts.store.service.model.Client;
 import com.spareparts.store.service.model.Role;
 
+
 import java.util.Set;
 
 public class ClientMapperImpl implements ClientMapper {

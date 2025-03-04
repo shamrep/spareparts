@@ -2,7 +2,7 @@ package com.spareparts.store.repository;
 
 import com.spareparts.store.repository.entity.PermissionEntity;
 import com.spareparts.store.repository.entity.RoleEntity;
-import com.spareparts.store.service.model.Permission;
+//import com.spareparts.store.service.model.Permission;
 import lombok.AllArgsConstructor;
 import org.springframework.jdbc.core.simple.JdbcClient;
 
@@ -73,15 +73,15 @@ public class RoleRepository {
                 .list();
     }
 
-    public Set<Permission> getRolePermissions(String roleName) {
+//    public Set<Permission> getRolePermissions(String roleName) {
 //        jdbcClient.sql("""
 //                select * from permissions join roles on permissions.role_id = role.id
 //                from
 //                    permissions join role_permissions on permission.id = role_permissions.permission_id
 //                where role_id = :roleId
 //                """).param("roleId")
-        return null;
-    }
+//        return null;
+//    }
 
     public Set<RoleEntity> getClientRoles(long clientId) {
 

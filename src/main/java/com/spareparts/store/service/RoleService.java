@@ -4,8 +4,9 @@ import com.spareparts.store.mapper.RoleMapper;
 import com.spareparts.store.repository.PermissionRepository;
 import com.spareparts.store.repository.RoleRepository;
 import com.spareparts.store.repository.entity.RoleEntity;
-import com.spareparts.store.service.model.Permission;
+
 import com.spareparts.store.service.model.Role;
+import com.spareparts.store.service.model.RoleEnum;
 
 import java.time.OffsetDateTime;
 import java.util.Optional;
@@ -17,7 +18,7 @@ public class RoleService {
     private RoleRepository roleRepository;
     private PermissionRepository permissionRepository;
 
-    public void addRole(String name) {
+    public void addRole(RoleEnum name) {
         roleRepository.save(new RoleEntity(null, name, OffsetDateTime.now()));
     }
 
@@ -38,11 +39,11 @@ public class RoleService {
         return RoleMapper.toRole(optionalRoleEntity.get());
     }
 
-    public Set<Permission> getRolePermissions(String roleName) {
-
-        return roleRepository.getRolePermissions(roleName);
-
-    }
+//    public Set<Permission> getRolePermissions(String roleName) {
+//
+//        return roleRepository.getRolePermissions(roleName);
+//
+//    }
 
     Set<Role> getClientRoles(long clientId) {
 

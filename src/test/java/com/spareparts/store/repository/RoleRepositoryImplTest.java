@@ -2,6 +2,7 @@ package com.spareparts.store.repository;
 
 import com.spareparts.store.repository.entity.RoleEntity;
 import com.spareparts.store.repository.util.DatabaseTestManager;
+import com.spareparts.store.service.model.RoleEnum;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
@@ -50,7 +51,7 @@ public class RoleRepositoryImplTest {
 //                .query(Long.class)
 //                .single();
 
-        RoleEntity roleToSave = new RoleEntity(null, "client", OffsetDateTime.now(ZoneOffset.UTC));
+        RoleEntity roleToSave = new RoleEntity(null, RoleEnum.ADMIN, OffsetDateTime.now(ZoneOffset.UTC));
 
         long generatedRoleId = roleRepository.save(roleToSave);
 
