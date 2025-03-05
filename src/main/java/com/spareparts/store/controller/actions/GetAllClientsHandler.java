@@ -6,7 +6,6 @@ import com.spareparts.store.controller.Request;
 import com.spareparts.store.controller.Response;
 import com.spareparts.store.controller.dto.ClientDTO;
 import com.spareparts.store.mapper.ClientMapper;
-import com.spareparts.store.mapper.ClientMapperImpl;
 import com.spareparts.store.service.ClientService;
 
 import java.util.List;
@@ -18,7 +17,7 @@ public class GetAllClientsHandler implements Handler {
 
     public GetAllClientsHandler() {
         this.clientService = new ClientService();
-        this.clientMapper = new ClientMapperImpl();
+        this.clientMapper = new ClientMapper();
     }
 
     @Override

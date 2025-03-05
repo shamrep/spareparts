@@ -1,14 +1,13 @@
 package com.spareparts.store;
 
 import com.spareparts.store.mapper.ClientMapper;
-import com.spareparts.store.mapper.ClientMapperImpl;
 import com.spareparts.store.repository.ClientRepository;
 import com.spareparts.store.repository.entity.ClientEntity;
 import com.spareparts.store.service.ClientService;
 import com.spareparts.store.service.RoleService;
 import com.spareparts.store.service.model.Client;
 import com.spareparts.store.service.model.Role;
-import com.spareparts.store.service.model.RoleEnum;
+import com.spareparts.store.service.model.ClientRole;
 import com.spareparts.store.service.util.PasswordUtil;
 import com.spareparts.store.service.util.validation.core.validators.BasicValidator;
 import com.spareparts.store.service.util.validation.exceptions.EmailAlreadyInUseException;
@@ -28,7 +27,7 @@ public class ClientServiceTest {
 
     private ClientService clientService;
     private ClientRepository clientRepository;
-    private final ClientMapper clientMapper = new ClientMapperImpl();
+    private final ClientMapper clientMapper = new ClientMapper();
     private RoleService roleService;
     private BasicValidator validator;
 
@@ -47,7 +46,7 @@ public class ClientServiceTest {
 
         Client inputClient = new Client(null, "client1@gmail.com", "Client Name", "password123", null);
         String hashPassword = PasswordUtil.hashPassword("password123");
-        Role defaultRole = new Role(1L, RoleEnum.ADMIN, OffsetDateTime.now());
+        Role defaultRole = new Role(1L, ClientRole.ADMIN, OffsetDateTime.now());
         ClientEntity clientEntity = new ClientEntity(1L, "client1@gmail.com", "Client Name", hashPassword);
         Client hashedClient = new Client(1L, "client1@gmail.com", "Client Name", hashPassword, Set.of(defaultRole));
 

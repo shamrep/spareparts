@@ -2,10 +2,8 @@ package com.spareparts.store;
 
 import com.spareparts.store.controller.FrontController;
 import com.spareparts.store.controller.filter.JwtAuthFilter;
-import jakarta.servlet.FilterRegistration;
 import org.apache.catalina.Context;
 import org.apache.catalina.LifecycleException;
-import org.apache.catalina.startup.ContextConfig;
 import org.apache.catalina.startup.Tomcat;
 import org.apache.tomcat.util.descriptor.web.FilterDef;
 import org.apache.tomcat.util.descriptor.web.FilterMap;
@@ -39,7 +37,7 @@ public class EmbeddedTomcatServer {
 //        context.addLifecycleListener(new ContextConfig()); // Enables annotation scanning
 
 
-        Class filterClass = JwtAuthFilter.class;
+        Class<JwtAuthFilter> filterClass = JwtAuthFilter.class;
         FilterDef myFilterDef = new FilterDef();
         myFilterDef.setFilterClass(filterClass.getName());
         myFilterDef.setFilterName(filterClass.getSimpleName());

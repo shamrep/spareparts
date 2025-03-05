@@ -1,7 +1,8 @@
 package com.spareparts.store.repository.entity;
 
-import com.spareparts.store.service.model.RoleEnum;
+import com.spareparts.store.service.model.ClientRole;
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 import java.time.OffsetDateTime;
@@ -11,26 +12,10 @@ import java.util.Objects;
 
 @AllArgsConstructor
 @Getter
-//@EqualsAndHashCode
+@EqualsAndHashCode
 public class RoleEntity {
+
     private Long id;
-    private RoleEnum name;
-    private OffsetDateTime createdAt;
-//    private Long creatorId;
+    private String name;
 
-    public OffsetDateTime getCreatedAt() {
-        return createdAt.truncatedTo(ChronoUnit.MICROS);
-    }
-
-    @Override
-    public boolean equals(Object object) {
-        if (object == null || getClass() != object.getClass()) return false;
-        RoleEntity that = (RoleEntity) object;
-        return Objects.equals(getId(), that.getId()) && Objects.equals(getName(), that.getName()) && Objects.equals(getCreatedAt(), that.getCreatedAt());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getId(), getName(), getCreatedAt());
-    }
 }

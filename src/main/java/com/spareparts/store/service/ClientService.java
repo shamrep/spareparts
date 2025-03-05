@@ -1,11 +1,10 @@
 package com.spareparts.store.service;
 
 import com.spareparts.store.mapper.ClientMapper;
-import com.spareparts.store.mapper.ClientMapperImpl;
 import com.spareparts.store.repository.ClientRepository;
 import com.spareparts.store.repository.entity.ClientEntity;
 import com.spareparts.store.service.model.Client;
-import com.spareparts.store.service.model.Role;
+import com.spareparts.store.service.model.ClientRole;
 import com.spareparts.store.service.util.PasswordUtil;
 import com.spareparts.store.service.util.validation.core.validators.BasicValidator;
 import com.spareparts.store.service.util.validation.exceptions.EmailAlreadyInUseException;
@@ -24,7 +23,7 @@ public class ClientService {
 
     public ClientService() {
 
-        this.clientMapper = new ClientMapperImpl();
+        this.clientMapper = new ClientMapper();
         this.clientRepository = new ClientRepository();
         this.roleService = new RoleService();
         this.validator = new BasicValidator();
@@ -51,7 +50,7 @@ public class ClientService {
 
         validateClientCredentials(client);
 
-        Set<Role> roles = new HashSet<>();
+        Set<ClientRole> roles = new HashSet<>();
         roles.add(roleService.getDefaultRole());
 
         ClientEntity clientEntity = clientMapper.toNewClientEntity(
@@ -101,15 +100,6 @@ public class ClientService {
 
     }
 
-    public Optional<Client> loginClient(String email, String password) {
-
-//        Optional<Client> client = findClientByEmail(email);
-        String hashPassword = PasswordUtil.hashPassword(password);
-
-//        return client.filter(c -> c.getPassword().equals(hashPassword));
-return Optional.<Client>of(new Client(1L, "john.doe@example.com", "DOE", "securepassword123", Set.of()));
-    }
-
 
     public Optional<Client> findClientByEmail(String email) {
 
@@ -118,13 +108,5 @@ return Optional.<Client>of(new Client(1L, "john.doe@example.com", "DOE", "secure
                 .map(entity -> clientMapper.toClient(entity, roleService.getClientRoles(entity.getId())));
 
     }
-
-//    private boolean hasPermission(Client client, String requiredPermission) {
-//
-//        return client.getRoles().stream()
-//                .flatMap(role -> role.getPermissions().stream())
-//                .anyMatch(permission -> permission.getName().equals(requiredPermission));
-//
-//    }
 
 }

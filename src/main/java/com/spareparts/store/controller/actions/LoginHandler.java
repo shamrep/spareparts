@@ -1,131 +1,138 @@
 package com.spareparts.store.controller.actions;
 
-import com.spareparts.store.controller.HandleError;
 import com.spareparts.store.controller.Request;
 import com.spareparts.store.controller.Response;
-import com.spareparts.store.controller.dto.ClientCredentialsDTO;
-import com.spareparts.store.controller.dto.ClientDTO;
 import com.spareparts.store.mapper.JsonMapper;
 import com.spareparts.store.mapper.MapperException;
-import com.spareparts.store.service.ClientAuthorizationService;
-import com.spareparts.store.service.ClientService;
+import com.spareparts.store.service.ClientAuthenticationService;
 import com.spareparts.store.service.model.Client;
-import com.spareparts.store.service.model.Role;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import com.spareparts.store.service.model.ClientRole;
+import lombok.*;
 
 import java.time.OffsetDateTime;
 import java.util.Optional;
 import java.util.Set;
 
+@RequiredArgsConstructor
 public class LoginHandler implements Handler {
 
-    private final ClientService clientService;
-    private final ClientAuthorizationService clientAuthorizationService;
+    private final ClientAuthenticationService clientAuthenticationService;
 
+    // Constructor with default service creation can be used if dependency injection is not available
     public LoginHandler() {
-
-        this.clientService = new ClientService();
-        this.clientAuthorizationService = new ClientAuthorizationService();
-
+        this(new ClientAuthenticationService());
     }
 
     @Override
     public void handle(Request request, Response response) {
 
-        String body = request.getBody();
-        CredentialsDTO credentialsDto = null;
-
         try {
-
-            credentialsDto = JsonMapper.fromJson(body, CredentialsDTO.class);
-
+            CredentialsDTO credentialsDto = parseCredentials(request.getBody());
+            authenticateAndRespond(credentialsDto, response);
         } catch (MapperException e) {
-
-            response
-                    .setStatusCode(Response.SC_BAD_REQUEST)
-                    .error("Bad Request")
-                    .message("Invalid request body")
-                    .details(e.getMessage())
-                    .build();
-
-            return;
-
+            handleInvalidRequestBody(response, e);
         }
 
-        Optional<Client> optionalClient
-                = clientService.loginClient(credentialsDto.getEmail(), credentialsDto.getPassword());
+    }
+
+    private CredentialsDTO parseCredentials(String body) throws MapperException {
+
+        return JsonMapper.fromJson(body, CredentialsDTO.class);
+
+    }
+
+    private void authenticateAndRespond(CredentialsDTO credentialsDto, Response response) throws MapperException {
+
+        Optional<Client> optionalClient = clientAuthenticationService.authenticateClient(
+                credentialsDto.getEmail(),
+                credentialsDto.getPassword()
+        );
 
         if (optionalClient.isPresent()) {
-
-            String token = clientAuthorizationService.authenticateClient(optionalClient.get());
-            OffsetDateTime expirationDate = clientAuthorizationService.getExpirationDate();
-
-            LoginResponse loginResponse = new LoginResponse(
-                    token,
-                    expirationDate,
-                    new LoginResponse.UserDetails(
-                            optionalClient.get().getId(),
-                            optionalClient.get().getEmail(),
-                            optionalClient.get().getName(),
-                            optionalClient.get().getRoles()));
-
-            try {
-
-                response
-                        .setStatusCode(Response.SC_OK)
-                        .setHeader("Authorization", String.format("Bearer %s", token))
-                        .body(JsonMapper.toJson(loginResponse))
-                        .build();
-
-            } catch (MapperException e) {
-
-                throw new HandleError(e);
-
-            }
-
+            handleSuccessfulLogin(optionalClient.get(), response);
         } else {
+            handleUnauthorizedLogin(response);
+        }
 
-            response
-                    .setStatusCode(Response.SC_NOT_AUTHORIZED)
-                    .error("Unauthorized")
-                    .message("Invalid email or password")
+    }
+
+    private void handleSuccessfulLogin(Client client, Response response) throws MapperException {
+
+            String token = clientAuthenticationService.generateClientToken(client);
+            OffsetDateTime expirationDate = clientAuthenticationService.getExpirationDate();
+
+            LoginResponse loginResponse = LoginResponse.builder()
+                    .token(token)
+                    .expirationDate(expirationDate)
+                    .user(LoginResponse.UserDetails.builder()
+                            .id(client.getId())
+                            .email(client.getEmail())
+                            .name(client.getName())
+                            .roles(client.getRoles())
+                            .build())
                     .build();
 
-        }
-        
+            response
+                    .setStatusCode(Response.SC_OK)
+                    .setHeader("Authorization", String.format("Bearer %s", token))
+                    .body(JsonMapper.toJson(loginResponse))
+                    .build();
+
+    }
+
+    private void handleUnauthorizedLogin(Response response) {
+
+        response
+                .setStatusCode(Response.SC_NOT_AUTHORIZED)
+                .error("Unauthorized")
+                .message("Invalid email or password")
+                .build();
+
+    }
+
+    private void handleInvalidRequestBody(Response response, MapperException e) {
+
+        response
+                .setStatusCode(Response.SC_BAD_REQUEST)
+                .error("Bad Request")
+                .message("Invalid request body")
+                .details(e.getMessage())
+                .build();
+
     }
 
     @Getter
+    @Builder
+    @NoArgsConstructor
     @AllArgsConstructor
-    private static class LoginResponse {
+    public static class LoginResponse {
 
         private String token;
         private OffsetDateTime expirationDate;
         private UserDetails user;
 
         @Getter
+        @Builder
+        @NoArgsConstructor
         @AllArgsConstructor
         public static class UserDetails {
 
             private long id;
             private String email;
             private String name;
-            private Set<Role> roles;
+            private Set<ClientRole> roles;
 
         }
 
     }
 
+    @Getter
     @NoArgsConstructor
     @AllArgsConstructor
-    @Getter
     private static class CredentialsDTO {
 
         private String email;
         private String password;
 
     }
-
 }

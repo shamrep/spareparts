@@ -16,5 +16,5 @@ public class Client {
     private String name;
     private String password;
 
-    private Set<Role> roles;
+    private Set<ClientRole> roles;
 }

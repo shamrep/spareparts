@@ -1,6 +1,6 @@
 package com.spareparts.store.service.model;
 
-public enum RoleEnum {
+public enum ClientRole {
     ADMIN,
     CLIENT,
     TRAINER,

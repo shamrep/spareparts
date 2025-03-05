@@ -1,59 +1,34 @@
 package com.spareparts.store.service;
 
-import com.spareparts.store.service.model.Client;
-import com.spareparts.store.service.util.TokenManager;
-import io.jsonwebtoken.Claims;
-import lombok.Getter;
+import com.spareparts.store.service.model.ClientRole;
 
-import java.time.Instant;
-import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ClientAuthorizationService {
 
-    private final long expirationTime = 3600;
-    @Getter
-    private OffsetDateTime expirationDate;
+    private final ClientService clientService;
+    private final Map<String, List<ClientRole>> map = new HashMap<>();
 
-    public String authenticateClient(Client client) {
+    public ClientAuthorizationService() {
 
-        Map<String, Object> claims = new HashMap<>();
-        expirationDate = OffsetDateTime.now().plusHours(24);
-
-        claims.put("email", client.getEmail());
-        claims.put("exp", expirationDate.toEpochSecond());
-        claims.put("userId", client.getId());
-        claims.put("roles", client.getRoles());
-
-        return TokenManager.generateToken(claims);
+        clientService = new ClientService();
+        map.put("/admin/*", List.of(ClientRole.ADMIN));
+        map.put("/client/*", List.of(ClientRole.OWNER));
+        map.put("/stats/attendance", List.of(ClientRole.OWNER, ClientRole.TRAINER));
 
     }
 
-    public boolean isTokenValid(String token) {
+    public boolean isClientAuthorized(String path, List<ClientRole> clientRoles) {
 
-        if (TokenManager.validateToken(token)) {
-
-            Claims claims = TokenManager.decodeToken(token);
-
-            Long expTimestamp = claims.get("exp", Long.class);
-
-            if (OffsetDateTime.ofInstant(Instant.ofEpochSecond(expTimestamp), ZoneOffset.UTC).isBefore(OffsetDateTime.now())) {
-
-                throw new RuntimeException("Token is expired!");
-
-            }
-
-        }
-
-        return false;
+        return map.get(path).stream().anyMatch(clientRoles::contains);
 
     }
 
-    public Claims extractTokenDetails(String token) {
+    public boolean isProtected(String url) {
 
-        return TokenManager.decodeToken(token);
+        return map.containsKey(url);
 
     }
 

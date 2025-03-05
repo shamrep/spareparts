@@ -1,75 +1,80 @@
 package com.spareparts.store.controller.filter;
 
-import com.spareparts.store.service.AuthenticationService;
-import com.spareparts.store.service.AuthorizationService;
-import com.spareparts.store.service.model.Role;
-import com.spareparts.store.service.model.RoleEnum;
+import com.spareparts.store.service.ClientAuthenticationService;
+import com.spareparts.store.service.ClientAuthorizationService;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.Optional;
 
 public class JwtAuthFilter implements Filter {
 
-    private final AuthenticationService authenticationService;
-    private final AuthorizationService authorizationService;
-    private final Map<String, List<RoleEnum>> map = new HashMap<>();
+    private final ClientAuthenticationService clientAuthenticationService;
+    private final ClientAuthorizationService clientAuthorizationService;
 
-    public JwtAuthFilter() {
+    // Constructor with dependency injection
+    public JwtAuthFilter(
+            ClientAuthenticationService clientAuthenticationService,
+            ClientAuthorizationService clientAuthorizationService
+    ) {
 
-        this.authenticationService = new AuthenticationService();
-        this.authorizationService = new AuthorizationService();
-        map.put("/admin/*", List.of(RoleEnum.ADMIN));
-        map.put("/client/*", List.of(RoleEnum.OWNER));
-        map.put("/stats/attendance", List.of(RoleEnum.OWNER, RoleEnum.TRAINER));
+        this.clientAuthenticationService = clientAuthenticationService;
+        this.clientAuthorizationService = clientAuthorizationService;
 
     }
 
-
+    public JwtAuthFilter() {
+        this(new ClientAuthenticationService(), new ClientAuthorizationService());
+    }
 
     @Override
-    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
+    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
+            throws IOException, ServletException {
 
         HttpServletRequest req = (HttpServletRequest) servletRequest;
         HttpServletResponse resp = (HttpServletResponse) servletResponse;
 
-        String url = req.getPathInfo();
+        String url = req.getRequestURI(); // More reliable than getPathInfo()
 
-        if (requireRole(url)) {
+        // Early return for unprotected URLs
+        if (!clientAuthorizationService.isProtected(url)) {
+            filterChain.doFilter(servletRequest, servletResponse);
+            return;
+        }
 
-            // Extract token from the Authorization header
-            String token = req.getHeader("Authorization");
+        // Extract and validate token
+        Optional<String> tokenResult = validateToken(req);
 
-            System.out.println("JwtAuth HELLO!)");
-
-            // If no token, deny access
-            if (
-                    token == null ||
-                    !token.startsWith("Bearer ") ||
-                    authenticationService.isValidToken(token) ||
-                    !authorizationService.isAuthorized(token, map.get(url)) ) {
-
-                resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Missing or invalid token");
-
-                return;
-
-            }
-
+        if (tokenResult.isEmpty()) {
+            resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Missing or invalid token");
+            return;
         }
 
         // Proceed with the request
         filterChain.doFilter(servletRequest, servletResponse);
-
     }
 
+    private Optional<String> validateToken(HttpServletRequest req) {
 
-    private boolean requireRole(String url) {
+        String authHeader = req.getHeader("Authorization");
 
-        return map.containsKey(url);
+        // Check if Authorization header exists and starts with "Bearer "
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            return Optional.empty();
+        }
+
+        String token = authHeader.substring(7); // Remove "Bearer " prefix
+
+        // Validate token
+        return clientAuthenticationService.isValidToken(token) &&
+               clientAuthorizationService.isClientAuthorized(
+                       token,
+                       clientAuthenticationService.getClientRoles(token)
+               )
+                ? Optional.of(token)
+                : Optional.empty();
 
     }
 
