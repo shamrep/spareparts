@@ -25,6 +25,7 @@ dependencies {
 	implementation ("org.liquibase:liquibase-core")
 	runtimeOnly("org.postgresql:postgresql")
 
+//	implementation("org.springframework:spring-context")
 
 	implementation("org.apache.tomcat.embed:tomcat-embed-core:11.0.2")
 	implementation("org.apache.tomcat.embed:tomcat-embed-jasper:11.0.2")
@@ -42,8 +43,6 @@ dependencies {
 	runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.12.6")
 
 	implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.16.1")
-	// Latest version
-
 
 
 	compileOnly("jakarta.servlet:jakarta.servlet-api:6.1.0")

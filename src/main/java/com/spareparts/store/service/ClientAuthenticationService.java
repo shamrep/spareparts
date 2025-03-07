@@ -75,11 +75,12 @@ public class ClientAuthenticationService {
 
     public Optional<Client> authenticateClient(String email, String password) {
 
-//        Optional<Client> client = findClientByEmail(email);
-        String hashPassword = PasswordUtil.hashPassword(password);
+        Optional<Client> client = clientService.findClientByEmail(email);
+//        String hashPassword = PasswordUtil.hashPassword(password);
+        String hashPassword = password;
 
-//        return client.filter(c -> c.getPassword().equals(hashPassword));
-        return Optional.<Client>of(new Client(1L, "john.doe@example.com", "DOE", "securepassword123", Set.of(ClientRole.CLIENT)));
+        return client.filter(c -> c.getPassword().equals(hashPassword));
+
     }
 
 }

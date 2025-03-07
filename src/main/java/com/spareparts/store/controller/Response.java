@@ -27,7 +27,7 @@ public class Response {
 
     public static int SC_BAD_REQUEST = 400;
 
-    public static int SC_INTERNAL_SERVER_ERROR = 111;
+    public static int SC_INTERNAL_SERVER_ERROR = 500;
 
     private final HttpServletResponse baseResponse;
 

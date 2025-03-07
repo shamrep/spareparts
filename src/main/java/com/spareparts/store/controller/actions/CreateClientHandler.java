@@ -44,17 +44,19 @@ public class CreateClientHandler implements Handler {
             ClientRegistrationDTO registrationDTO = JsonMapper.fromJson(request.getBody(), ClientRegistrationDTO.class);
             Client client = clientMapper.toClient(registrationDTO);
 
-            // Register client
-            Client registeredClient = clientService.registerClient(client)
-                    .orElseThrow(() -> new RuntimeException("Client registration failed"));
+//             Register client
+//            Client registeredClient = clientService.registerClient(client)
+//                    .orElseThrow(() -> new RuntimeException("Client registration failed"));
+
+            Client registeredClient = clientService.registerClient(client).get();
 
             // Generate authentication token
             String clientToken = clientAuthenticationService.generateClientToken(registeredClient);
 
-            // Successful response
+//             Successful response
             response
                     .setStatusCode(Response.SC_CREATED)
-                    .message("Authorization successful.")
+                    .message("Registration is successful.")
                     .details(Map.of(
                             "token", clientToken,
                             "expiresIn", clientAuthenticationService.getExpirationDate().toString()
@@ -88,10 +90,11 @@ public class CreateClientHandler implements Handler {
         } catch (RuntimeException e) {
             // Unexpected registration failure
             response
+                    .error("Registration process failed")
                     .setStatusCode(Response.SC_INTERNAL_SERVER_ERROR)
                     .message("Unexpected error during registration")
-                    .error("Registration process failed")
                     .build();
         }
     }
+
 }

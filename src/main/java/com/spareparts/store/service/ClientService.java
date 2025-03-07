@@ -5,7 +5,6 @@ import com.spareparts.store.repository.ClientRepository;
 import com.spareparts.store.repository.entity.ClientEntity;
 import com.spareparts.store.service.model.Client;
 import com.spareparts.store.service.model.ClientRole;
-import com.spareparts.store.service.util.PasswordUtil;
 import com.spareparts.store.service.util.validation.core.validators.BasicValidator;
 import com.spareparts.store.service.util.validation.exceptions.EmailAlreadyInUseException;
 import com.spareparts.store.service.util.validation.exceptions.ValidationException;
@@ -40,7 +39,8 @@ public class ClientService {
 
     public Optional<Client> registerClient(Client client) {
 
-        String hashedPassword = PasswordUtil.hashPassword(client.getPassword());
+//        String hashedPassword = PasswordUtil.hashPassword(client.getPassword());
+        String hashedPassword = client.getPassword();
 
         if (clientRepository.existsByEmail(client.getEmail())) {
 
@@ -103,9 +103,11 @@ public class ClientService {
 
     public Optional<Client> findClientByEmail(String email) {
 
-        return clientRepository
-                .findByEmail(email)
-                .map(entity -> clientMapper.toClient(entity, roleService.getClientRoles(entity.getId())));
+//        return clientRepository
+//                .findByEmail(email)
+//                .map(entity -> clientMapper.toClient(entity, roleService.getClientRoles(entity.getId())));
+
+        return Optional.of(new Client(1L, "john.doe@example.com", "DOE", "securepassword123", Set.of(ClientRole.CLIENT)));
 
     }
 
