@@ -1,0 +1,19 @@
+package com.gymapp.repository.entity;
+
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+
+import java.util.Objects;
+
+@Getter
+@AllArgsConstructor
+@EqualsAndHashCode
+public class ClientEntity {
+
+    private Long id;
+    private String email;
+    private String name;
+    private String password;
+
+}

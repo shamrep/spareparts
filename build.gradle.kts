@@ -26,6 +26,7 @@ dependencies {
 	runtimeOnly("org.postgresql:postgresql")
 
 //	implementation("org.springframework:spring-context")
+	implementation ("org.springframework:spring-core")
 
 	implementation("org.apache.tomcat.embed:tomcat-embed-core:11.0.2")
 	implementation("org.apache.tomcat.embed:tomcat-embed-jasper:11.0.2")

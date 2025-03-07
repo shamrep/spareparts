@@ -20,8 +20,8 @@ services:
 #      - my-network
 
   db:
-    image: postgres:17  # Use the appropriate PostgreSQL version
     container_name: postgres-db-gym-app-container
+    image: postgres:17  # Use the appropriate PostgreSQL version
     restart: always
     env_file:
       - .env
