@@ -3,9 +3,9 @@ spring:
     name: gym_app
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/gym_app
-    username: postgres
-    password: 1234
+    url: jdbc:postgresql://localhost:5432/gym-app-db
+    username: root
+    password: 1234567a
     driver-class-name: org.postgresql.Driver
 
   liquibase:

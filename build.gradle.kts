@@ -1,7 +1,7 @@
 plugins {
 	java
-	id("org.springframework.boot") version "3.3.4"
-	id("io.spring.dependency-management") version "1.1.6"
+//	id("org.springframework.boot") version "3.3.4"
+//	id("io.spring.dependency-management") version "1.1.6"
 	id("idea")
 }
 
@@ -19,25 +19,28 @@ repositories {
 }
 
 dependencies {
-	implementation("org.springframework.boot:spring-boot-starter-web")
+	implementation("org.springframework.boot:spring-boot-starter-web:3.4.3")
 
-	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-	implementation ("org.liquibase:liquibase-core")
-	runtimeOnly("org.postgresql:postgresql")
+	implementation("org.liquibase:liquibase-core:4.31.1")
+	runtimeOnly("org.postgresql:postgresql:42.7.5")
 
-//	implementation("org.springframework:spring-context")
-	implementation ("org.springframework:spring-core")
+	implementation("org.springframework:spring-jdbc:6.2.3")
+	implementation("org.springframework:spring-context:6.2.3")
+	implementation ("org.springframework:spring-core:6.2.3")
+	implementation("org.springframework:spring-beans:6.2.3")
+
+	// YAML support
+	implementation("org.yaml:snakeyaml:2.4")
 
 	implementation("org.apache.tomcat.embed:tomcat-embed-core:11.0.2")
 	implementation("org.apache.tomcat.embed:tomcat-embed-jasper:11.0.2")
 
-
-	compileOnly("org.projectlombok:lombok")
-	annotationProcessor("org.projectlombok:lombok")
+	compileOnly("org.projectlombok:lombok:1.18.36")
+	annotationProcessor("org.projectlombok:lombok:1.18.36")
 
 	implementation("com.zaxxer:HikariCP:6.1.0")
 
-	implementation ("org.springframework.security:spring-security-crypto")
+	implementation("org.springframework.security:spring-security-crypto:6.4.3")
 
 	implementation("io.jsonwebtoken:jjwt-api:0.12.6")
 	runtimeOnly("io.jsonwebtoken:jjwt-impl:0.12.6")
@@ -56,7 +59,7 @@ dependencies {
 	testImplementation("org.mockito:mockito-core:5.14.2")
 	testImplementation("org.mockito:mockito-junit-jupiter:5.14.2")
 
-	testImplementation("org.junit.platform:junit-platform-launcher")
+	testImplementation("org.junit.platform:junit-platform-launcher:1.12.0")
 	testImplementation("org.junit.jupiter:junit-jupiter:5.7.1")
 
 	testImplementation("org.assertj:assertj-core:3.26.3")

@@ -2,19 +2,16 @@ package com.gymapp.repository;
 
 import com.gymapp.repository.entity.RoleEntity;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.simple.JdbcClient;
 
 import java.util.Optional;
 import java.util.Set;
 
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class RoleRepository {
 
-    private JdbcClient jdbcClient;
-
-    public RoleRepository() {
-        this.jdbcClient = JdbcClient.create(DataSourceManager.getDataSource());
-    }
+    private final JdbcClient jdbcClient;
 
     public Optional<RoleEntity> findById(long id) {
 

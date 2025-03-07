@@ -1,9 +1,19 @@
 package com.gymapp;
 
 
+import com.gymapp.config.AppConfig;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+
+import javax.sql.DataSource;
+
+
+@Configuration
+@ComponentScan("com.gymapp")
 public class GymApplication {
 
-   private final EmbeddedTomcatServer tomcatServer;
+    private final EmbeddedTomcatServer tomcatServer;
 
     public GymApplication(EmbeddedTomcatServer tomcatServer) {
         this.tomcatServer = tomcatServer;
@@ -16,7 +26,15 @@ public class GymApplication {
     public static void main(String[] args) {
 
         GymApplication gymApplication = new GymApplication();
-        gymApplication.tomcatServer.start();
+        new Thread(gymApplication.tomcatServer::start).start();
+
+        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(GymApplication.class);
+
+//        AppConfig.loadYamlConfig(context.getEnvironment());
+
+        DataSource dataSource = context.getBean(DataSource.class);
+
+        System.out.println(dataSource.hashCode());
 
     }
 

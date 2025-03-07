@@ -1,7 +1,6 @@
 package com.gymapp.controller;
 
 import com.gymapp.controller.actions.*;
-import com.spareparts.store.controller.actions.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -28,7 +27,7 @@ public class Dispatcher {
 
     public void dispatch(Request request, Response response) {
 
-       Handler handler = getHandler(Route.RequestMethods.valueOf(request.getMethod()), request.getPath());
+        Handler handler = getHandler(Route.RequestMethods.valueOf(request.getMethod()), request.getPath());
 
         try {
 
@@ -47,7 +46,7 @@ public class Dispatcher {
         }
     }
 
-    private Handler getHandler (Route.RequestMethods requestMethod, String requestPath) {
+    private Handler getHandler(Route.RequestMethods requestMethod, String requestPath) {
 
         Set<Map.Entry<Route, Handler>> entries = handlers.entrySet();
 
