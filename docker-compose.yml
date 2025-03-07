@@ -1,15 +1,43 @@
+version: '3.8'
+
+ # Defines all the containers (services) that will run
 services:
+#  app:
+#    image: my-gym-app-image:latest  # Replace with your actual image name
+#    container_name: gym-app-container
+#    restart: always
+#    depends_on:
+#      - db
+#    env_file:
+#      - .env
+#    environment:
+#      SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL}
+#      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
+#      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
+#    ports:
+#      - "8080:8080"
+#    networks:
+#      - my-network
+
   db:
-    image: postgres:17.0
-    container_name: spareparts_app_db
+    image: postgres:17  # Use the appropriate PostgreSQL version
+    container_name: postgres-db-gym-app-container
+    restart: always
+    env_file:
+      - .env
     environment:
-      POSTGRES_USER: root
-      POSTGRES_PASSWORD: 1234
-      POSTGRES_DB: spareparts_db
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    networks:
+      - my-network
+
+networks:
+  my-network:
 
 volumes:
   postgres_data:
