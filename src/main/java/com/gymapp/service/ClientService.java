@@ -23,9 +23,9 @@ public class ClientService {
     public ClientService() {
 
         this.clientMapper = new ClientMapper();
-        this.clientRepository = new ClientRepository();
-        this.roleService = new RoleService();
-        this.validator = new BasicValidator();
+//        this.clientRepository = new ClientRepository();
+//        this.roleService = new RoleService();
+//        this.validator = new BasicValidator();
 
     }
 

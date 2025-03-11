@@ -1,7 +1,8 @@
 package com.gymapp;
 
 
-import com.gymapp.config.AppConfig;
+import com.gymapp.repository.ClientRepository;
+import com.gymapp.repository.entity.ClientEntity;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -26,15 +27,21 @@ public class GymApplication {
     public static void main(String[] args) {
 
         GymApplication gymApplication = new GymApplication();
-        new Thread(gymApplication.tomcatServer::start).start();
+        
+        Thread t = new Thread(gymApplication.tomcatServer::start);
+        t.setDaemon(true);
+        t.start();
 
         AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(GymApplication.class);
 
-//        AppConfig.loadYamlConfig(context.getEnvironment());
+        ClientRepository repository = context.getBean(ClientRepository.class);
 
-        DataSource dataSource = context.getBean(DataSource.class);
+        // Save a new client
+        ClientEntity client = new ClientEntity(null, "test@example.com", "John Doe", "securepassword");
 
-        System.out.println(dataSource.hashCode());
+        repository.save(client);
+
+        System.out.println(repository.existsByEmail("test@example.com"));
 
     }
 

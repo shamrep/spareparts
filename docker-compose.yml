@@ -1,5 +1,3 @@
-version: '3.8'
-
  # Defines all the containers (services) that will run
 services:
 #  app:
@@ -26,18 +24,32 @@ services:
     env_file:
       - .env
     environment:
-      POSTGRES_DB: ${POSTGRES_DB}
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: gym_app_db
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: 1234567a
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-    networks:
-      - my-network
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
-networks:
-  my-network:
+  liquibase:
+    image: liquibase/liquibase:latest
+    container_name: liquibase
+    volumes:
+      - ./src/main/resources/liquibase/changelog:/liquibase/changelog
+#    environment:
+#      - LIQUIBASE_URL=jdbc:postgresql://db:5432/gym_app_db
+#      - LIQUIBASE_USERNAME=root
+#      - LIQUIBASE_PASSWORD=1234567a
+#      - LIQUIBASE_CHANGELOG_FILE=/liquibase/changelog/db.changelog-master.xml
+    depends_on:
+      - db
+    entrypoint: ["update"]
 
 volumes:
   postgres_data:

@@ -22,14 +22,14 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-web:3.4.3")
 
 	implementation("org.liquibase:liquibase-core:4.31.1")
-	runtimeOnly("org.postgresql:postgresql:42.7.5")
+	implementation("org.postgresql:postgresql:42.7.5")
 
 	implementation("org.springframework:spring-jdbc:6.2.3")
 	implementation("org.springframework:spring-context:6.2.3")
 	implementation ("org.springframework:spring-core:6.2.3")
 	implementation("org.springframework:spring-beans:6.2.3")
 
-	// YAML support
+	// YAML support  (application.yml)
 	implementation("org.yaml:snakeyaml:2.4")
 
 	implementation("org.apache.tomcat.embed:tomcat-embed-core:11.0.2")

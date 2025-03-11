@@ -2,19 +2,18 @@ package com.gymapp.repository;
 
 import com.gymapp.repository.entity.ClientEntity;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.simple.JdbcClient;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
 
-@AllArgsConstructor
+@Repository
+@RequiredArgsConstructor
 public class ClientRepository {
 
-    private JdbcClient jdbcClient;
-
-    public ClientRepository() {
-//        this.jdbcClient = JdbcClient.create(DataSourceManager.getDataSource());
-    }
+    private final JdbcClient jdbcClient;
 
     public Optional<ClientEntity> findById(Long id) {
 
@@ -43,14 +42,6 @@ public class ClientRepository {
                 .param("password", clientEntity.getPassword())
                 .query(Long.class)
                 .single();
-
-    }
-
-    public void update(ClientEntity clientEntity) {
-
-    }
-
-    public void delete(Long id) {
 
     }
 

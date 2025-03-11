@@ -30,7 +30,7 @@ public class LiquibaseRunner {
             scopeArgs.put("url", container.getJdbcUrl());
             scopeArgs.put("username", container.getUsername());
             scopeArgs.put("password", container.getPassword());
-            scopeArgs.put("changeLogFile", "db/changelog/db.changelog-master.xml");
+            scopeArgs.put("changeLogFile", "liquibase/changelog/db.changelog-master.xml");
 
             CommandScope updateScope = new CommandScope("update");
             scopeArgs.forEach(updateScope::addArgumentValue);
