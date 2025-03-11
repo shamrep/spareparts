@@ -1,6 +1,7 @@
 package com.gymapp.repository;
 
 import com.gymapp.repository.entity.ClientEntity;
+import com.gymapp.repository.entity.RoleEntity;
 import com.gymapp.service.model.ClientRole;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
@@ -20,12 +21,11 @@ public class ClientRepository {
 
     public Optional<ClientEntity> findById(Long id) {
 
-        return jdbcClient
-                .sql("select * from clients where id = ?;")
+       return   jdbcClient
+                .sql("select * from clients where id = ? join client_roles on clients.id = client_roles.client_id;")
                 .param(id)
                 .query(ClientEntity.class)
                 .optional();
-
     }
 
     public List<ClientEntity> findAll() {
@@ -34,6 +34,7 @@ public class ClientRepository {
 
 @Transactional
     public void saveClient(ClientEntity clientEntity) {
+
         String INSERT_CLIENT = "INSERT INTO clients (name, email, password) VALUES (:name, :email, :password) RETURNING id";
         String INSERT_ROLE = "INSERT INTO clients_roles (client_id, role_id) VALUES (:clientId, (SELECT id FROM roles WHERE name = :roleName))";
 
