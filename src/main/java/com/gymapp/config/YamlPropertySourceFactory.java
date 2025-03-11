@@ -18,6 +18,7 @@ public class YamlPropertySourceFactory implements PropertySourceFactory {
         Resource yamlResource = new ClassPathResource("application.yml");
 
         return loader.load("yamlProperties", yamlResource).get(0);
+
     }
 
 }

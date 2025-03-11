@@ -54,6 +54,7 @@ public class JwtAuthFilter implements Filter {
 
         // Proceed with the request
         filterChain.doFilter(servletRequest, servletResponse);
+
     }
 
     private Optional<String> validateToken(HttpServletRequest req) {
