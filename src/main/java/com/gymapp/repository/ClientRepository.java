@@ -1,11 +1,14 @@
 package com.gymapp.repository;
 
 import com.gymapp.repository.entity.ClientEntity;
+import com.gymapp.service.model.ClientRole;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Connection;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,6 +30,28 @@ public class ClientRepository {
 
     public List<ClientEntity> findAll() {
         return List.of();
+    }
+
+@Transactional
+    public void saveClient(ClientEntity clientEntity) {
+        String INSERT_CLIENT = "INSERT INTO clients (name, email, password) VALUES (:name, :email, :password) RETURNING id";
+        String INSERT_ROLE = "INSERT INTO clients_roles (client_id, role_id) VALUES (:clientId, (SELECT id FROM roles WHERE name = :roleName))";
+
+        // Step 1: Insert client and get generated ID
+        Long clientId = jdbcClient.sql(INSERT_CLIENT)
+                .param("name", clientEntity.getName())
+                .param("email", clientEntity.getEmail())
+                .param("password", clientEntity.getPassword())
+                .query(Long.class)
+                .single();
+
+        // Step 2: Insert roles using batch update
+        for (ClientRole role : clientEntity.getRoles()) {
+            jdbcClient.sql(INSERT_ROLE)
+                    .param("clientId", clientId)
+                    .param("roleName", role.name())
+                    .update();
+        }
     }
 
     public long save(ClientEntity clientEntity) {

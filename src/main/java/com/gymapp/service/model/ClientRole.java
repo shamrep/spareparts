@@ -1,9 +1,15 @@
 package com.gymapp.service.model;
 
 public enum ClientRole {
+
     ADMIN,
-    CLIENT,
+    USER,
     TRAINER,
     OWNER,
-    BOSS
+    BOSS;
+
+    public static ClientRole fromString(String roleName) {
+        return ClientRole.valueOf(roleName.toUpperCase());
+    }
+
 }
