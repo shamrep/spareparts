@@ -35,11 +35,11 @@ public class ClientRepository {
 @Transactional
     public void saveClient(ClientEntity clientEntity) {
 
-        String INSERT_CLIENT = "INSERT INTO clients (name, email, password) VALUES (:name, :email, :password) RETURNING id";
-        String INSERT_ROLE = "INSERT INTO clients_roles (client_id, role_id) VALUES (:clientId, (SELECT id FROM roles WHERE name = :roleName))";
-
         // Step 1: Insert client and get generated ID
-        Long clientId = jdbcClient.sql(INSERT_CLIENT)
+        Long clientId = jdbcClient.sql("""
+                        insert into clients (name, email, password) 
+                        values (:name, :email, :password) RETURNING id;
+                        """)
                 .param("name", clientEntity.getName())
                 .param("email", clientEntity.getEmail())
                 .param("password", clientEntity.getPassword())
@@ -48,7 +48,10 @@ public class ClientRepository {
 
         // Step 2: Insert roles using batch update
         for (ClientRole role : clientEntity.getRoles()) {
-            jdbcClient.sql(INSERT_ROLE)
+            jdbcClient.sql("""
+                            insert into clients_roles (client_id, role_id) 
+                            values (:clientId, (select id from roles WHERE name = :roleName));
+                            """)
                     .param("clientId", clientId)
                     .param("roleName", role.name())
                     .update();
